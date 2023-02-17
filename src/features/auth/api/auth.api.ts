@@ -5,7 +5,8 @@ import {
   AuthRequest,
   AuthResponse,
   FacebookAuthResponse,
-  GoogleAuthResponse
+  GoogleAuthResponse,
+  LoginByGoogleOrFacebookRequest
 } from "../types/auth.type";
 import { api } from "app/api/api";
 
@@ -43,4 +44,11 @@ export const getUserByFacebook = async (accessToken = ""): Promise<FacebookAuthR
       }
     });
   return result.data as FacebookAuthResponse;
+};
+
+export const loginByGoogleOrFacebook = async (
+  user: LoginByGoogleOrFacebookRequest
+): Promise<AuthResponse> => {
+  const result = await api.post<AuthResponse>(AuthEndpointsEnum.LOGIN_WITH_PLATFORM, user);
+  return result.data;
 };

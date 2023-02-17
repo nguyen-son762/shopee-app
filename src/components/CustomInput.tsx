@@ -1,10 +1,10 @@
 import React, { memo, useState } from "react";
-import { TextInput, View } from "react-native";
+import { TextInput, TextInputProps, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
 import CustomLink from "./CustomLink";
 
-interface Props {
+interface Props extends TextInputProps {
   icon: React.ElementType;
   iconName: unknown;
   iconColor: string;
@@ -12,11 +12,8 @@ interface Props {
   showIcon?: boolean;
   borderWidth?: number;
   borderColor?: string;
-  placeholder?: string;
   inputClass?: string;
   isPassword?: boolean;
-  value?: string;
-  onChangeText?: ((text: string) => void) | undefined;
 }
 
 const CustomInput = ({
@@ -26,12 +23,10 @@ const CustomInput = ({
   size,
   borderColor,
   borderWidth,
-  placeholder,
   showIcon = false,
   inputClass,
   isPassword,
-  value,
-  onChangeText
+  ...props
 }: Props) => {
   const [showPassword, setShowPassword] = useState(false);
   const Icon = icon;
@@ -49,11 +44,9 @@ const CustomInput = ({
         </View>
       )}
       <TextInput
+        {...props}
         secureTextEntry={isPassword && !showPassword}
-        onChangeText={onChangeText}
-        placeholder={placeholder}
         className="text-base flex-1 h-[50]"
-        value={value}
       />
       {isPassword && (
         <View className="translate-y-[3px] flex-row items-center">

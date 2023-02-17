@@ -1,6 +1,5 @@
 import React, { memo } from "react";
-import { TouchableOpacity, View } from "react-native";
-import CustomText from "app/components/CustomText";
+import { Text, TouchableOpacity, View } from "react-native";
 import { AuthSessionResult } from "expo-auth-session";
 
 interface Props {
@@ -26,7 +25,7 @@ const PlatformButton = (props: Props) => {
         <View className="w-[20%]">
           <Icon name={iconName} size={iconSize} color={iconColor} />
         </View>
-        <CustomText class="flex-1 text-center">{label}</CustomText>
+        <Text className="text-lg flex-1 text-center">{label}</Text>
         <View className="w-[20%]"></View>
       </View>
     </TouchableOpacity>

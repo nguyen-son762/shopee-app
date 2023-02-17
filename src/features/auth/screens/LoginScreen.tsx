@@ -1,13 +1,7 @@
-import {
-  ANDROID_CLIENT_ID,
-  IOS_CLIENT_ID,
-  EXPO_CLIENT_ID,
-  GOOGLE_URL_AUTHENTICATION,
-  FACEBOOK_CLIENT_ID
-} from "@env";
+import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, EXPO_CLIENT_ID, FACEBOOK_CLIENT_ID } from "@env";
 
 import React, { useEffect, useRef } from "react";
-import { Image, SafeAreaView, TouchableOpacity, View } from "react-native";
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-auth-session/providers/facebook";
@@ -17,18 +11,14 @@ import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
-import axios from "axios";
 import Toast from "react-native-easy-toast";
 
 import { Theme } from "app/constants/theme.constants";
-import { RootStackParams } from "app/types/routes.types";
-import CustomText from "app/components/CustomText";
+import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import CustomInput from "app/components/CustomInput";
 import CustomButton from "app/components/CustomButton";
 import PlatformButton from "../components/PlatformButton";
 import LoginFooter from "../components/LoginFooter";
-import { AuthEndpointsEnum } from "../constants/auth.endpoints";
-import { getUserByFacebook } from "../api/auth.api";
 import { useStoreState, useStoreDispatch } from "app/store";
 
 type Props = NativeStackScreenProps<RootStackParams>;
@@ -38,11 +28,12 @@ interface LoginFormValues {
   password: string;
 }
 
-export default function LoginScreen({ navigation }: Props) {
+const LoginScreen = ({ navigation }: Props) => {
   const { user } = useStoreState((state) => state.auth);
   const {
-    auth: { login }
+    auth: { login, onGetUserByGoogle, onGetUserByFacebook }
   } = useStoreDispatch();
+  const toastRef = useRef<Toast | null>(null);
   const [, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,
     iosClientId: IOS_CLIENT_ID,
@@ -56,17 +47,25 @@ export default function LoginScreen({ navigation }: Props) {
     email: "",
     password: ""
   };
+
   useEffect(() => {
-    function handleLoginByFacebook() {
+    if (user) {
+      navigation.navigate(RoutesNameEnum.HOME);
+    }
+  }, [user, navigation]);
+
+  useEffect(() => {
+    async function handleLoginByFacebook() {
       if (responseFacebook?.type !== "success" || !responseFacebook.authentication) {
         return;
       }
-      getUserByFacebook(responseFacebook.authentication.accessToken)
-        .then(() => {})
-        .catch(() => {});
+      await onGetUserByFacebook(responseFacebook.authentication.accessToken);
+      if (!user) {
+        showToast("Đã có lỗi xảy ra");
+      }
     }
     handleLoginByFacebook();
-  }, [responseFacebook]);
+  }, [responseFacebook, onGetUserByFacebook, user]);
 
   useEffect(() => {
     async function handleLoginByGoogle() {
@@ -77,42 +76,34 @@ export default function LoginScreen({ navigation }: Props) {
         await AsyncStorage.setItem("auth", JSON.stringify(response.authentication));
       };
       await persistAuth();
-      axios
-        .create({
-          baseURL: GOOGLE_URL_AUTHENTICATION,
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${response.authentication?.accessToken || ""}`
-          },
-          withCredentials: true
-        })
-        .get(AuthEndpointsEnum.GOOGLE_AUTHENTICATION)
-        .then((data) => {
-          console.warn("data", data.data);
-        })
-        .catch((err) => {
-          console.log("err", err);
-        });
+      await onGetUserByGoogle(response.authentication?.accessToken || "");
+      if (!user) {
+        showToast("Đã có lỗi xảy ra");
+      }
     }
     handleLoginByGoogle();
-  }, [response]);
+  }, [response, onGetUserByGoogle, user]);
 
   const handleLogin = async (values: LoginFormValues) => {
-    await login(values);
-    if (!user) {
+    try {
+      await login(values);
+      if (!user) {
+        showToast();
+      }
+    } catch {
       showToast();
     }
   };
-  const showToast = () => {
+  const showToast = (description = "Email/Tên đăng nhập không hợp lệ") => {
     toastRef.current?.show(
       <View className="flex-col items-center py-1 px-3">
         <Ionicons name="ios-warning" size={40} color="white" />
-        <CustomText class="text-white text-base">Email/Tên đăng nhập không hợp lệ</CustomText>
+        <Text className="text-white text-base">{description}</Text>
       </View>,
       2000
     );
   };
-  const toastRef = useRef<Toast | null>(null);
+
   return (
     <SafeAreaView className="bg-white min-h-full">
       <Toast
@@ -139,7 +130,7 @@ export default function LoginScreen({ navigation }: Props) {
             />
           </TouchableOpacity>
         </View>
-        <CustomText class="flex-1 text-black text-center">Đăng nhập</CustomText>
+        <Text className="flex-1 text-black text-center">Đăng nhập</Text>
         <View className="w-[30%] flex-row justify-end pr-1">
           <TouchableOpacity>
             <AntDesign name="questioncircleo" size={26} color={Theme.color.primary} />
@@ -197,7 +188,7 @@ export default function LoginScreen({ navigation }: Props) {
 
       <View className="flex-row items-center justify-center mt-7">
         <View className="h-[1px] w-8 bg-[#f5f5f5]"></View>
-        <CustomText class="mx-2">Hoặc</CustomText>
+        <Text className="mx-2">Hoặc</Text>
         <View className="h-[1px] w-8 bg-[#f5f5f5]"></View>
       </View>
 
@@ -223,4 +214,6 @@ export default function LoginScreen({ navigation }: Props) {
       <LoginFooter />
     </SafeAreaView>
   );
-}
+};
+
+export default LoginScreen;

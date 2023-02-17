@@ -1,18 +1,27 @@
+import { loginByGoogleOrFacebook } from "./../api/auth.api";
 import { Action, Thunk, action, thunk, ThunkOn, thunkOn } from "easy-peasy";
-import { AuthDef, AuthRequest, AuthResponse } from "../types/auth.type";
+import {
+  AuthDef,
+  AuthRequest,
+  AuthResponse,
+  LoginByGoogleOrFacebookRequest
+} from "../types/auth.type";
 import { getUser, getUserByFacebook, getUserByGoogle } from "../api/auth.api";
 
 export interface AuthModel {
   user: AuthDef | null;
+  isError: boolean;
   set: Action<AuthModel, AuthResponse>;
   login: Thunk<AuthModel, AuthRequest>;
-  loginWithGoogle: Thunk<AuthModel, string>;
-  loginWithFacebook: Thunk<AuthModel, string>;
+  onGetUserByGoogle: Thunk<AuthModel, string>;
+  onGetUserByFacebook: Thunk<AuthModel, string>;
+  loginByGoogleOrFacebook: Thunk<AuthModel, LoginByGoogleOrFacebookRequest>;
   onError: ThunkOn<AuthModel>;
 }
 
 const initialState = {
-  user: null
+  user: null,
+  isError: false
 };
 
 export const auth: AuthModel = {
@@ -23,21 +32,52 @@ export const auth: AuthModel = {
       refreshToken: payload.refreshToken
     };
   }),
-  login: thunk(async (_, payload) => {
-    await getUser(payload);
+  login: thunk(async (actions, payload) => {
+    const user = await getUser(payload);
+    actions.set(user);
+  }),
+  onGetUserByGoogle: thunk(async (actions, payload, { fail }) => {
+    try {
+      const { id, email, picture, given_name, family_name } = await getUserByGoogle(payload);
+      await actions.loginByGoogleOrFacebook({
+        _id: id,
+        email: email,
+        avatar_url: picture,
+        first_name: family_name,
+        last_name: given_name
+      });
+    } catch (err) {
+      fail(err);
+    }
+  }),
+  onGetUserByFacebook: thunk(async (actions, payload) => {
+    const {
+      email,
+      id,
+      first_name,
+      last_name,
+      picture: {
+        data: { url }
+      }
+    } = await getUserByFacebook(payload);
+    await actions.loginByGoogleOrFacebook({
+      _id: id,
+      email: email,
+      avatar_url: url,
+      first_name,
+      last_name
+    });
+  }),
+  loginByGoogleOrFacebook: thunk(async (actions, payload, { fail }) => {
+    try {
+      const user = await loginByGoogleOrFacebook(payload);
+      actions.set(user);
+    } catch (err) {
+      fail(err);
+    }
   }),
   onError: thunkOn(
-    (actions) => actions.login.successType,
-    () => {
-      console.log("error ne");
-    }
-  ),
-  loginWithGoogle: thunk(async (_, payload) => {
-    const googleUser = await getUserByGoogle(payload);
-    console.log(googleUser);
-  }),
-  loginWithFacebook: thunk(async (_, payload) => {
-    const user = await getUserByFacebook(payload);
-    console.log(user);
-  })
+    (actions) => actions.onGetUserByGoogle.successType,
+    () => {}
+  )
 };

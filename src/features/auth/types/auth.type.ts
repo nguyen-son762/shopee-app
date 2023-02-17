@@ -47,3 +47,11 @@ export interface GoogleAuthResponse {
   picture: string;
   verified_email: boolean;
 }
+
+export interface LoginByGoogleOrFacebookRequest {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  avatar_url: string;
+  email: string;
+}
