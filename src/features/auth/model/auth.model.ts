@@ -34,6 +34,7 @@ export const auth: AuthModel = {
   }),
   login: thunk(async (actions, payload) => {
     const user = await getUser(payload);
+    console.warn('user',user)
     actions.set(user);
   }),
   onGetUserByGoogle: thunk(async (actions, payload, { fail }) => {

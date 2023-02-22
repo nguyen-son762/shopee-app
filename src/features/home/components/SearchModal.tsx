@@ -13,12 +13,10 @@ const SearchModal: FC<Props> = ({ open, close }) => {
   const history = ["Áo nam", "Bút bi", "Gấu bông"];
   const searchRef = useRef<TextInput>(null);
   useEffect(() => {
-    console.warn("useEffect");
     if (searchRef.current) {
       searchRef.current.focus();
     }
   }, []);
-  console.warn("searchRef", searchRef);
 
   return (
     <Modal animationType="fade" transparent={true} visible={open}>
