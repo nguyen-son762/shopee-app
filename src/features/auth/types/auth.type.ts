@@ -1,11 +1,23 @@
+interface AddressDef {
+  name: string;
+  phone_number: string;
+  city: string;
+  street: string;
+  default: boolean;
+}
+
 export type AuthDef = {
   _id: string;
   username?: string;
   first_name?: string;
   last_name?: string;
   email?: string;
-  accessToken?: string;
-  refreshToken?: string;
+  access_token?: string;
+  refresh_token?: string;
+  active?: boolean;
+  phone_number?: string;
+  avatar_url?: string;
+  address?: AddressDef[];
 };
 
 export type AuthRequest = {
@@ -19,7 +31,7 @@ export type PlatformAuthRequest = {
 
 export type AuthResponse = {
   data: AuthDef;
-  refreshToken?: string;
+  access_token?: string;
 };
 
 export interface FacebookAuthResponse {
@@ -55,3 +67,15 @@ export interface LoginByGoogleOrFacebookRequest {
   avatar_url: string;
   email: string;
 }
+
+export interface SignUpUserRequest {
+  phone_number: string;
+  password: string;
+}
+
+export interface VerifyOtpRequest {
+  access_token: string;
+  otp: string;
+}
+
+export type SignUpResponse = AuthResponse;

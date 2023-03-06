@@ -22,7 +22,9 @@ const routeWrapper = ({ name, component, presentation = "card" }: RouteItemDef) 
 };
 function Routes() {
   return (
-    <RootStack.Navigator>{ROUTE_LIST.map((route) => routeWrapper(route))}</RootStack.Navigator>
+    <>
+      <RootStack.Navigator>{ROUTE_LIST.map((route) => routeWrapper(route))}</RootStack.Navigator>
+    </>
   );
 }
 

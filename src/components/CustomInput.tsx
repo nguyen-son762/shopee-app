@@ -14,6 +14,7 @@ interface Props extends TextInputProps {
   borderColor?: string;
   inputClass?: string;
   isPassword?: boolean;
+  isForgotPassword?: boolean;
 }
 
 const CustomInput = ({
@@ -26,6 +27,7 @@ const CustomInput = ({
   showIcon = false,
   inputClass,
   isPassword,
+  isForgotPassword,
   ...props
 }: Props) => {
   const [showPassword, setShowPassword] = useState(false);
@@ -56,14 +58,18 @@ const CustomInput = ({
             name={showPassword ? "eye" : "eye-off"}
             onPress={() => setShowPassword(!showPassword)}
           />
-          <View className="w-[1px] h-[25px] bg-[#cdcecc] mx-3"></View>
-          <CustomLink
-            to={{
-              screen: "Home" as never,
-              params: {} as never
-            }}
-            label="Quên?"
-          />
+          {isForgotPassword && (
+            <>
+              <View className="w-[1px] h-[25px] bg-[#cdcecc] mx-3"></View>
+              <CustomLink
+                to={{
+                  screen: "Home" as never,
+                  params: {} as never
+                }}
+                label="Quên?"
+              />
+            </>
+          )}
         </View>
       )}
     </View>

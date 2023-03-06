@@ -32,7 +32,8 @@
     "react-native-screens": "^3.18.2",
     "react-native-simple-toast": "^2.0.0",
     "react-native-web": "~0.18.9",
-    "remote-redux-devtools": "^0.5.16"
+    "remote-redux-devtools": "^0.5.16",
+    "yup": "^1.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

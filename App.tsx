@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { StoreProvider } from "easy-peasy";
 import store from "app/store";
 import Routes from "app/routes/Routes";
+import CustomToast from "app/components/Toast/CustomToast";
 
 function App() {
   return (

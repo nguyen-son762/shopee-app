@@ -2,14 +2,18 @@ import { FC } from "react";
 
 export enum RoutesNameEnum {
   LOGIN = "Login",
+  SIGN_UP = "SignUp",
   HOME = "Home",
-  CART = "Cart"
+  CART = "Cart",
+  VERIFY_OTP = "VerifyOTP"
 }
 
 export type RootStackParams = {
   [RoutesNameEnum.HOME]: undefined;
   [RoutesNameEnum.LOGIN]: undefined;
+  [RoutesNameEnum.SIGN_UP]: undefined;
   [RoutesNameEnum.CART]: undefined;
+  [RoutesNameEnum.VERIFY_OTP]: undefined;
 };
 
 export type RouteItemDef = {

@@ -1,25 +1,25 @@
 import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, EXPO_CLIENT_ID, FACEBOOK_CLIENT_ID } from "@env";
 
-import React, { useEffect, useRef } from "react";
-import { Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import React, { useEffect } from "react";
+import { Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-auth-session/providers/facebook";
 import { AntDesign } from "@expo/vector-icons";
-import { Ionicons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
-import Toast from "react-native-easy-toast";
 
-import { Theme } from "app/constants/theme.constants";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import CustomInput from "app/components/CustomInput";
 import CustomButton from "app/components/CustomButton";
-import PlatformButton from "../components/PlatformButton";
-import LoginFooter from "../components/LoginFooter";
+import PlatformButton from "../../components/PlatformButton";
+import LoginFooter from "../../components/LoginFooter";
 import { useStoreState, useStoreDispatch } from "app/store";
+import LoginAndSignUpHeader from "../../components/LoginAndSignUpHeader";
+import DefaultLayout from "app/components/layouts/DefaultLayout";
+import { ToastTypeEnum } from "app/features/app/toast/toast.type";
 
 type Props = NativeStackScreenProps<RootStackParams>;
 
@@ -31,9 +31,9 @@ interface LoginFormValues {
 const LoginScreen = ({ navigation }: Props) => {
   const { user } = useStoreState((state) => state.auth);
   const {
-    auth: { login, onGetUserByGoogle, onGetUserByFacebook }
+    auth: { login, onGetUserByGoogle, onGetUserByFacebook },
+    toast: { onOpen }
   } = useStoreDispatch();
-  const toastRef = useRef<Toast | null>(null);
   const [, response, promptAsync] = Google.useAuthRequest({
     androidClientId: ANDROID_CLIENT_ID,
     iosClientId: IOS_CLIENT_ID,
@@ -61,11 +61,16 @@ const LoginScreen = ({ navigation }: Props) => {
       }
       await onGetUserByFacebook(responseFacebook.authentication.accessToken);
       if (!user) {
-        showToast("Đã có lỗi xảy ra");
+        onOpen({
+          description: "Đã có lỗi xảy ra",
+          type: ToastTypeEnum.WARNING
+        });
+        return;
       }
+      navigation.navigate(RoutesNameEnum.HOME);
     }
     handleLoginByFacebook();
-  }, [responseFacebook, onGetUserByFacebook, user]);
+  }, [responseFacebook, onGetUserByFacebook, user, navigation, onOpen]);
 
   useEffect(() => {
     async function handleLoginByGoogle() {
@@ -78,72 +83,35 @@ const LoginScreen = ({ navigation }: Props) => {
       await persistAuth();
       await onGetUserByGoogle(response.authentication?.accessToken || "");
       if (!user) {
-        showToast("Đã có lỗi xảy ra");
+        onOpen({
+          description: "Đã có lỗi xảy ra",
+          type: ToastTypeEnum.WARNING
+        });
       }
     }
     handleLoginByGoogle();
-  }, [response, onGetUserByGoogle, user]);
+  }, [response, onGetUserByGoogle, user, navigation, onOpen]);
 
   const handleLogin = async (values: LoginFormValues) => {
     try {
       await login(values);
       if (!user) {
-        showToast();
+        onOpen({
+          description: "Email/Tên đăng nhập không hợp lệ",
+          type: ToastTypeEnum.WARNING
+        });
       }
     } catch {
-      showToast();
+      onOpen({
+        description: "Email/Tên đăng nhập không hợp lệ",
+        type: ToastTypeEnum.WARNING
+      });
     }
-  };
-  const showToast = (description = "Email/Tên đăng nhập không hợp lệ") => {
-    toastRef.current?.show(
-      <View className="flex-col items-center py-1 px-3">
-        <Ionicons name="ios-warning" size={40} color="white" />
-        <Text className="text-white text-base">{description}</Text>
-      </View>,
-      2000
-    );
   };
 
   return (
-    <SafeAreaView className="bg-white min-h-full">
-      <Toast
-        ref={(toast) => (toastRef.current = toast)}
-        position="center"
-        style={{ backgroundColor: "rgba(0,0,0,0.8)", borderRadius: "10px" }}
-      />
-
-      <View
-        className="flex-row items-center shadow-md bg-white p-3"
-        style={{
-          shadowColor: "#171717",
-          shadowOpacity: 0.2,
-          shadowRadius: 3
-        }}
-      >
-        <View className="w-[30%]">
-          <TouchableOpacity>
-            <Ionicons
-              name="arrow-back"
-              size={30}
-              color={Theme.color.primary}
-              onPress={() => navigation.goBack()}
-            />
-          </TouchableOpacity>
-        </View>
-        <Text className="flex-1 text-black text-center">Đăng nhập</Text>
-        <View className="w-[30%] flex-row justify-end pr-1">
-          <TouchableOpacity>
-            <AntDesign name="questioncircleo" size={26} color={Theme.color.primary} />
-          </TouchableOpacity>
-        </View>
-      </View>
-
-      <View className="text-center flex-row justify-center pt-10">
-        <Image
-          className="w-28 h-28 object-cover"
-          source={require("e-commerce-app/src/assets/images/shopee_logo.png")}
-        />
-      </View>
+    <DefaultLayout>
+      <LoginAndSignUpHeader title="Đăng nhập" />
 
       <Formik initialValues={initialValues} onSubmit={handleLogin}>
         {({ handleChange, handleSubmit, values }) => (
@@ -173,11 +141,12 @@ const LoginScreen = ({ navigation }: Props) => {
                 borderWidth={1}
                 borderColor="#cececd"
                 showIcon
+                isForgotPassword
                 onChangeText={handleChange("password")}
               />
             </View>
             <CustomButton
-              onPress={handleSubmit}
+              onPress={() => handleSubmit()}
               title="Đăng nhập"
               classNames="mx-6 mt-4"
               fontSize={18}
@@ -212,7 +181,7 @@ const LoginScreen = ({ navigation }: Props) => {
       </View>
 
       <LoginFooter />
-    </SafeAreaView>
+    </DefaultLayout>
   );
 };
 

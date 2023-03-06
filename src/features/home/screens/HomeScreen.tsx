@@ -34,6 +34,7 @@ export default function HomeScreen({ navigation }: Props) {
       <Button title="Modal" onPress={() => setModalVisible(true)} />
 
       <Button title="Login" onPress={() => navigation.navigate(RoutesNameEnum.LOGIN)} />
+      <Button title="Verify" onPress={() => navigation.navigate(RoutesNameEnum.VERIFY_OTP)} />
       <View
         style={{
           height: screenHeight * 2

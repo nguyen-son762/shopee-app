@@ -5,11 +5,11 @@ interface Props extends TouchableOpacityProps {
   title?: string;
   classNames?: string;
   fontSize?: number;
-  onPress: (() => void) | undefined;
   icon?: React.ElementType;
   iconName?: unknown;
   iconColor?: string;
   size?: number;
+  isFullWidth?: boolean;
 }
 
 const CustomButton = ({
@@ -20,11 +20,12 @@ const CustomButton = ({
   iconName,
   iconColor,
   size,
+  isFullWidth,
   ...props
 }: Props) => {
   const Icon = icon;
   return (
-    <TouchableOpacity {...props}>
+    <TouchableOpacity {...props} className={isFullWidth ? "w-full" : ""}>
       <View className={`bg-primary py-2 ${classNames || ""}`}>
         {Icon && <Icon color={iconColor} size={size || 24} name={iconName} />}
         <Text className="text-center text-white" style={{ fontSize: fontSize }}>
