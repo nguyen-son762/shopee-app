@@ -1,9 +1,10 @@
 import React, { FC } from "react";
-import { SafeAreaView, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import CustomToast from "../Toast/CustomToast";
 import { Ionicons } from "@expo/vector-icons";
 import { Theme } from "app/constants/theme.constants";
 import { useNavigation } from "@react-navigation/native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface DefaultLayoutProps {
   children: React.ReactNode;

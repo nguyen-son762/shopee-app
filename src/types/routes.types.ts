@@ -1,3 +1,4 @@
+import { ProductDef } from "app/features/product/types/product.type";
 import { FC } from "react";
 
 export enum RoutesNameEnum {
@@ -5,7 +6,8 @@ export enum RoutesNameEnum {
   SIGN_UP = "SignUp",
   HOME = "Home",
   CART = "Cart",
-  VERIFY_OTP = "VerifyOTP"
+  VERIFY_OTP = "VerifyOTP",
+  PRODUCT_DETAIL = "ProductDetail"
 }
 
 export type RootStackParams = {
@@ -14,6 +16,9 @@ export type RootStackParams = {
   [RoutesNameEnum.SIGN_UP]: undefined;
   [RoutesNameEnum.CART]: undefined;
   [RoutesNameEnum.VERIFY_OTP]: undefined;
+  [RoutesNameEnum.PRODUCT_DETAIL]: {
+    item: ProductDef;
+  };
 };
 
 export type RouteItemDef = {

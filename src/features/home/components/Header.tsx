@@ -1,22 +1,17 @@
-import React, { memo } from "react";
+import React from "react";
 import { Text, View } from "react-native";
 import { EvilIcons, AntDesign, Ionicons } from "@expo/vector-icons";
 import { Theme } from "app/constants/theme.constants";
 
 interface Props {
-  isHaveSpaceToTop: boolean;
   openSearchModal: () => void;
 }
 
-const Header = ({ isHaveSpaceToTop, openSearchModal }: Props) => {
+const Header = ({ openSearchModal }: Props) => {
   return (
-    <View
-      className={`${
-        isHaveSpaceToTop ? "bg-red-400" : "bg-white"
-      } flex-row sticky top-0 left-0 pt-12 pb-4 px-3 items-center gap-3`}
-    >
+    <View className={`bg-white flex-row sticky top-0 left-0 py-2 px-3 items-center gap-x-3`}>
       <View
-        className="flex-row items-center flex-1 bg-[#f4f4f4] p-2 rounded-md"
+        className={`bg-[#f4f4f4 flex-row items-center flex-1 p-2 rounded-md`}
         onTouchEnd={openSearchModal}
       >
         <EvilIcons name="search" size={28} color="#797979" />
@@ -28,4 +23,4 @@ const Header = ({ isHaveSpaceToTop, openSearchModal }: Props) => {
   );
 };
 
-export default memo(Header);
+export default Header;

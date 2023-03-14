@@ -6,4 +6,5 @@ declare module "@env" {
   export const GOOGLE_URL_AUTHENTICATION: string;
   export const FACEBOOK_URL_AUTHENTICATION: string;
   export const FACEBOOK_CLIENT_ID: string;
+  export const URL_IMAGE_CLOUDIARY: string;
 }
