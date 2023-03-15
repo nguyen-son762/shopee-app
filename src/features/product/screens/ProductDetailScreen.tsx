@@ -12,7 +12,9 @@ import {
   TouchableOpacity,
   useWindowDimensions,
   FlatList,
-  ActivityIndicator
+  ActivityIndicator,
+  Modal,
+  TouchableWithoutFeedback
 } from "react-native";
 import { ProductDef } from "../types/product.type";
 import { URL_IMAGE_CLOUDIARY } from "@env";
@@ -29,6 +31,8 @@ import { Theme } from "app/constants/theme.constants";
 import ReviewsProduct from "../components/ReviewsProduct";
 import { products } from "app/mock/product";
 import Product from "../components/Product";
+import AddToCartModal from "../components/AddToCartModal";
+import ImageModal from "../components/ImageModal";
 
 type ProductDetailProps = NativeStackScreenProps<RootStackParams>;
 const screenWidth = Dimensions.get("window").width;
@@ -40,33 +44,47 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
   const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
   const [numOfImage, setNumOfImage] = useState(0);
   const [isShowAllDescription, setIsShowAllDescription] = useState(false);
+  const [isVisibleModalAddToCart, setIsVisibleModalAddToCart] = useState(false);
+  const [isVisibleModalImages, setIsVisibleModalImages] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
   const totalRating = useMemo(
     () => product.item_rating.rating_count.reduce((current, prev) => prev + current, 0),
     [product]
   );
   useEffect(() => {
     setNumOfImage(carouselImagesRef.current?.getCurrentIndex() || 0);
-  }, []);
+  }, [selectedImage]);
+  const onClickImage = (url: string) => {
+    setSelectedImage(url);
+    carouselImagesRef.current?.scrollToIndex({
+      index: product.images.findIndex((image) => image === url) || 0
+    });
+  };
 
   return (
     <SafeAreaView
       className="flex-col relative"
       style={{
         height: height - 20
-      }}
-    >
+      }}>
       <ScrollView className="flex-1">
         <ActionHeader />
+        <ImageModal
+          isVisible={isVisibleModalImages}
+          images={product.images}
+          close={() => setIsVisibleModalImages(false)}
+        />
         <View className="relative">
           <SwiperFlatList
             ref={carouselImagesRef}
             index={0}
             onMomentumScrollEnd={() => {
               setNumOfImage(carouselImagesRef.current?.getCurrentIndex() || 0);
+              setSelectedImage(product.images[carouselImagesRef.current?.getCurrentIndex() || 0]);
             }}
             data={product.images}
             renderItem={({ item }: { item: string }) => (
-              <View>
+              <TouchableWithoutFeedback onPress={() => setIsVisibleModalImages(true)}>
                 <Image
                   source={{
                     uri: `${URL_IMAGE_CLOUDIARY}${item}`
@@ -76,7 +94,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
                     height: 250
                   }}
                 />
-              </View>
+              </TouchableWithoutFeedback>
             )}
           />
           <View
@@ -84,8 +102,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             style={{
               bottom: 10,
               right: 10
-            }}
-          >
+            }}>
             <Text className="text-[#747474] text-base">
               {numOfImage + 1} / {product.images.length}
             </Text>
@@ -94,21 +111,24 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
 
         <View className="px-2 bg-white">
           <Text className="py-2">{product.models.length} phân loại</Text>
-          <ImagesDescription images={product.images} />
+          <ImagesDescription
+            images={product.images}
+            selectedImage={selectedImage}
+            onTapImage={(url) => onClickImage(url)}
+          />
 
           <View className="flex-row justify-between mt-8">
             <Text
               className="text-lg"
               style={{
                 width: "80%"
-              }}
-            >
+              }}>
               {product.name}
             </Text>
             <DiscountLabel rawDiscount={product.raw_discount} />
           </View>
 
-          <Text className="text-primary text-2xl mt-3">
+          <Text className="text-primary text-xl mt-3">
             {product.price_max !== product.price_min
               ? `₫${product.price_min.toLocaleString()} - ₫${product.price_max.toLocaleString()}`
               : `₫${product.price_min.toLocaleString()}`}
@@ -125,7 +145,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
               readonly
               ratingCount={5}
               startingValue={product.item_rating.rating_star}
-              imageSize={28}
+              imageSize={24}
             />
             <Text className="ml-3 text-base">{product.item_rating.rating_star.toFixed(1)}</Text>
           </View>
@@ -137,12 +157,11 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             className="h-[200] overflow-hidden"
             style={{
               height: isShowAllDescription ? "auto" : 200
-            }}
-          >
+            }}>
             <RenderHTML
               contentWidth={width}
               source={{
-                html: `<p style="font-size:16px">${product.description.replaceAll(
+                html: `<p style="font-size:14px">${product.description.replaceAll(
                   "\n",
                   "<br />"
                 )}</p>`
@@ -154,8 +173,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
 
           <TouchableOpacity
             className="mt-3 flex-row justify-center items-center gap-x-2 pb-3"
-            onPress={() => setIsShowAllDescription(!isShowAllDescription)}
-          >
+            onPress={() => setIsShowAllDescription(!isShowAllDescription)}>
             <Text className="text-primary text-lg">
               {isShowAllDescription ? "Thu gọn" : "Xem thêm"}
             </Text>
@@ -188,8 +206,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
                 <View
                   style={{
                     width: (screenWidth - 16) / 2 - 4
-                  }}
-                >
+                  }}>
                   <Product
                     navigation={navigation}
                     product={product.item}
@@ -203,14 +220,22 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
       </ScrollView>
 
       <View className="flex-row">
-        <TouchableOpacity className="flex-1 bg-[#26a997] flex-col justify-center items-center py-1">
+        <TouchableOpacity
+          className="flex-1 bg-[#26a997] flex-col justify-center items-center py-1"
+          onPress={() => setIsVisibleModalAddToCart(true)}>
           <FontAwesome name="cart-plus" size={28} color="#fff" />
-          <Text className="text-white text-base">Thêm vào giỏ hàng</Text>
+          <Text className="text-white text-xs">Thêm vào giỏ hàng</Text>
         </TouchableOpacity>
         <TouchableOpacity className="flex-1 bg-[#ee4d2d] flex-row items-center justify-center py-1">
-          <Text className="text-white text-lg">Mua ngay</Text>
+          <Text className="text-white text-base">Mua ngay</Text>
         </TouchableOpacity>
       </View>
+
+      <AddToCartModal
+        product={product}
+        isVisible={isVisibleModalAddToCart}
+        close={() => setIsVisibleModalAddToCart(false)}
+      />
     </SafeAreaView>
   );
 };

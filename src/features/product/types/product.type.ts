@@ -1,4 +1,4 @@
-type ModelDef = {
+export type ModelDef = {
   _id?: string;
   name: string;
   price: number;
@@ -6,13 +6,13 @@ type ModelDef = {
   images: string;
 };
 
-type TierVariation = {
+export type TierVariation = {
   name: string;
   options: string[];
   images: string[] | null;
 };
 
-type ItemRating = {
+export type ItemRating = {
   rating_count: number[];
   rating_star: number;
 };

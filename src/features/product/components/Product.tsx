@@ -4,6 +4,7 @@ import { ProductDef } from "../types/product.type";
 import { URL_IMAGE_CLOUDIARY } from "@env";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { convertNumberToPrice } from "app/utils/convertPrice";
 
 type ProductProps = {
   product: ProductDef;
@@ -24,7 +25,7 @@ const Product: FC<ProductProps> = ({ product, width, navigation }) => {
       <View className="bg-white pb-3 w-full">
         <Image
           source={{
-            uri: URL_IMAGE_CLOUDIARY + thumb_url,
+            uri: `${URL_IMAGE_CLOUDIARY || ""}${thumb_url}`,
             width: width,
             height: 200
           }}
@@ -33,7 +34,7 @@ const Product: FC<ProductProps> = ({ product, width, navigation }) => {
           {name}
         </Text>
         <View>
-          <Text className="text-primary mt-2 text-base ml-2">₫{price.toLocaleString()}</Text>
+          <Text className="text-primary mt-2 text-base ml-2">{convertNumberToPrice(price)}</Text>
         </View>
       </View>
     </TouchableOpacity>

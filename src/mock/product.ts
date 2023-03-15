@@ -47,7 +47,7 @@ export const products: ProductDef[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item)
       },
       {
         name: "Xanh Dương,L",
-        price: 159000,
+        price: 200000,
         promotion: 0,
         images: "v1678350635/49bc7ecec1cc2aaedb5732b88b867389_v00l4z.jpg"
       },
@@ -71,10 +71,10 @@ export const products: ProductDef[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item)
       }
     ],
     price_before_discount: 309000,
-    price_max: 159000,
+    price_max: 200000,
     price_max_before_discount: 309000,
     price_min: 159000,
-    price_min_before_discount: 309000,
+    price_min_before_discount: 350000,
     raw_discount: 49,
     tier_variations: [
       {

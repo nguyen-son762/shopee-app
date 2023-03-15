@@ -7,7 +7,7 @@ interface Props {
   openSearchModal: () => void;
 }
 
-const Header = ({ openSearchModal }: Props) => {
+const HomeHeader = ({ openSearchModal }: Props) => {
   return (
     <View className={`bg-white flex-row sticky top-0 left-0 py-2 px-3 items-center gap-x-3`}>
       <View
@@ -23,4 +23,4 @@ const Header = ({ openSearchModal }: Props) => {
   );
 };
 
-export default Header;
+export default HomeHeader;

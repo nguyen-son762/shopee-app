@@ -7,7 +7,7 @@ export enum RoutesNameEnum {
   HOME = "Home",
   CART = "Cart",
   VERIFY_OTP = "VerifyOTP",
-  PRODUCT_DETAIL = "ProductDetail"
+  PRODUCT_DETAIL = "ProductDetail",
 }
 
 export type RootStackParams = {

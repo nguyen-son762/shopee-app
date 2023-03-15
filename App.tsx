@@ -9,17 +9,15 @@ import {
 } from "@react-navigation/native";
 import { StoreProvider } from "easy-peasy";
 import store from "app/store";
-import { AuthStackScreen, RootStackScreen } from "app/routes/Routes";
+import { AuthStackScreen, RootStackScreen, CartStackScreen } from "app/routes/Routes";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { FontAwesome } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Theme } from "app/constants/theme.constants";
 import { Text } from "react-native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import ProductDetailScreen from "app/features/product/screens/ProductDetailScreen";
 import { RoutesNameEnum } from "app/types/routes.types";
 
 const Tab = createBottomTabNavigator();
-const Stack = createNativeStackNavigator();
 
 Tab.Navigator;
 
@@ -49,6 +47,23 @@ function App() {
             component={RootStackScreen}
           />
           <Tab.Screen
+            name="Cart"
+            options={{
+              tabBarIcon: ({ focused }) => (
+                <AntDesign
+                  name="shoppingcart"
+                  size={24}
+                  color={focused ? Theme.color.primary : "#5a5a5a"}
+                />
+              ),
+              tabBarLabel: ({ focused }) => (
+                <Text className={focused ? "text-primary" : "text-[#5a5a5a]"}>Giỏ hàng</Text>
+              ),
+              headerShown: false
+            }}
+            component={CartStackScreen}
+          />
+          <Tab.Screen
             name="Auth"
             options={{
               tabBarIcon: ({ focused }) => (
@@ -65,6 +80,7 @@ function App() {
             }}
             component={AuthStackScreen}
           />
+
         </Tab.Navigator>
       </NavigationContainer>
     </StoreProvider>

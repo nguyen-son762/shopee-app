@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "app/types/routes.types";
-import Header from "../components/Header";
+import Header from "../components/HomeHeader";
 import { Dimensions } from "react-native";
 import SearchModal from "../components/SearchModal";
 import { useStoreDispatch } from "app/store";
