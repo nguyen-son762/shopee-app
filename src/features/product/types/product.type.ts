@@ -22,7 +22,7 @@ export type ItemRating = {
 };
 
 export type ProductDef = {
-  _id?: string;
+  _id: string;
   category: Category;
   name: string;
   price: number;

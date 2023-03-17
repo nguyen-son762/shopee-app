@@ -1,3 +1,4 @@
+import { AUTH_IN_ASYNC_STORAGE } from "./../../../constants/common.constants";
 import { AxiosError } from "axios";
 import { SignUpUserRequest, VerifyOtpRequest } from "./../types/auth.type";
 import { loginByGoogleOrFacebook, signUpUser, verifyOtp } from "./../api/auth.api";
@@ -11,6 +12,7 @@ import {
 import { getUser, getUserByFacebook, getUserByGoogle } from "../api/auth.api";
 import store from "app/store";
 import { ToastTypeEnum } from "app/features/app/toast/toast.type";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export interface AuthModel {
   user: AuthDef | null;
@@ -40,6 +42,7 @@ export const auth: AuthModel = {
       ...payload.data,
       access_token: payload.access_token
     };
+    AsyncStorage.setItem(AUTH_IN_ASYNC_STORAGE, JSON.stringify(state.user));
   }),
   setLoading: action((state, payload) => {
     state.loading = payload;
@@ -90,8 +93,8 @@ export const auth: AuthModel = {
   loginByGoogleOrFacebook: thunk(async (actions, payload, { fail }) => {
     try {
       actions.setLoading(true);
-      const user = await loginByGoogleOrFacebook(payload);
-      actions.set(user);
+      const result = await loginByGoogleOrFacebook(payload);
+      actions.set(result);
     } catch (err) {
       fail(err);
     } finally {

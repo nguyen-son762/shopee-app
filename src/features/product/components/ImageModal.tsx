@@ -40,7 +40,7 @@ const ImageModal: FC<ImageModalProps> = ({ isVisible, images, close }) => {
             onMomentumScrollEnd={() => {
               setNumOfImage(carouselImagesRef.current?.getCurrentIndex() || 0);
             }}
-            renderItem={({ item }) => (
+            renderItem={({ item }: { item: string }) => (
               <View>
                 <Image
                   source={{

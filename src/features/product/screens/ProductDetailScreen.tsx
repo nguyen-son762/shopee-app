@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
+import { RootStackParams } from "app/types/routes.types";
 import React, { FC, memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   SafeAreaView,
@@ -13,7 +13,6 @@ import {
   useWindowDimensions,
   FlatList,
   ActivityIndicator,
-  Modal,
   TouchableWithoutFeedback,
   LogBox
 } from "react-native";
@@ -35,7 +34,6 @@ import Product from "../components/Product";
 import AddToCartModal from "../components/AddToCartModal";
 import ImageModal from "../components/ImageModal";
 import CustomToast from "app/components/Toast/CustomToast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ProductDetailProps = NativeStackScreenProps<RootStackParams>;
 const screenWidth = Dimensions.get("window").width;
@@ -59,9 +57,11 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
+
   useEffect(() => {
     setNumOfImage(carouselImagesRef.current?.getCurrentIndex() || 0);
   }, [selectedImage]);
+
   const onClickImage = (url: string) => {
     setSelectedImage(url);
     carouselImagesRef.current?.scrollToIndex({

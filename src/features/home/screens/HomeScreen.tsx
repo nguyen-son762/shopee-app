@@ -35,9 +35,7 @@ export default function HomeScreen({ navigation }: Props) {
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
-  useEffect(() => {
-    handleCallApi();
-  }, [getProducts]);
+
   const handleCallApi = async () => {
     try {
       setLoading(true);
@@ -48,6 +46,11 @@ export default function HomeScreen({ navigation }: Props) {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    handleCallApi();
+  }, [getProducts, handleCallApi]);
+
   const isCloseToBottom = ({
     layoutMeasurement,
     contentOffset,
@@ -65,9 +68,7 @@ export default function HomeScreen({ navigation }: Props) {
       handleLoadMore();
     }
   };
-  const handleLoadMore = () => {
-    // console.warn("end");
-  };
+  const handleLoadMore = () => {};
 
   return (
     <SafeAreaView>

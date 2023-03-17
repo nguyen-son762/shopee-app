@@ -2,7 +2,7 @@ import { URL_IMAGE_CLOUDIARY } from "@env";
 import { Theme } from "app/constants/theme.constants";
 import { useStoreDispatch } from "app/store";
 import Checkbox from "expo-checkbox";
-import React, { FC, useState } from "react";
+import React, { FC, memo, useState } from "react";
 import { Image, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { CartDef } from "../model/cart.model";
 import { AntDesign } from "@expo/vector-icons";
@@ -120,7 +120,7 @@ const CartRow: FC<CartRowProps> = ({ item }) => {
                       fontSize: 20,
                       height: 30
                     }}
-                    value={item.amount + ""}
+                    value={`${item.amount}`}
                     onChangeText={(text) => onChangeAmount(text)}
                     keyboardType="numeric"
                   />
@@ -149,4 +149,4 @@ const CartRow: FC<CartRowProps> = ({ item }) => {
   );
 };
 
-export default CartRow;
+export default memo(CartRow);

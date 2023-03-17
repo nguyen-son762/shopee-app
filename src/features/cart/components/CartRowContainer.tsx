@@ -1,6 +1,6 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, memo, useMemo } from "react";
 import { CartDef } from "../model/cart.model";
-import { CameraRoll, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import Checkbox from "expo-checkbox";
 import { Theme } from "app/constants/theme.constants";
 import Divider from "app/components/Divider";
@@ -21,7 +21,7 @@ const CartRowContainer: FC<CartRowContainerProps> = ({ cartItem = [], category }
   const isSelectAll = useMemo(() => {
     const cartFilterByCategory = cart.filter((item) => item.item.category.name === category);
     return cartFilterByCategory.every((item) => item.selected);
-  }, [cart]);
+  }, [cart, category]);
 
   const onChangeSelectAll = () => {
     updateCart(
@@ -56,4 +56,4 @@ const CartRowContainer: FC<CartRowContainerProps> = ({ cartItem = [], category }
   );
 };
 
-export default CartRowContainer;
+export default memo(CartRowContainer);

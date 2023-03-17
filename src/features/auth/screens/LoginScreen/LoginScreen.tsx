@@ -1,6 +1,6 @@
 import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, EXPO_CLIENT_ID, FACEBOOK_CLIENT_ID } from "@env";
 
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
@@ -54,46 +54,51 @@ const LoginScreen = ({ navigation }: Props) => {
       if (user) {
         navigation.navigate(RoutesNameEnum.HOME);
       }
-    }, [user])
+    }, [user, navigation])
   );
 
-  useEffect(() => {
-    async function handleLoginByFacebook() {
-      if (responseFacebook?.type !== "success" || !responseFacebook.authentication) {
-        return;
-      }
-      await onGetUserByFacebook(responseFacebook.authentication.accessToken);
-      if (!user) {
-        onOpen({
-          description: "Đã có lỗi xảy ra",
-          type: ToastTypeEnum.WARNING
-        });
-        return;
-      }
-      navigation.navigate(RoutesNameEnum.HOME);
+  async function handleLoginByFacebook() {
+    if (responseFacebook?.type !== "success" || !responseFacebook.authentication) {
+      return;
     }
-    handleLoginByFacebook();
-  }, [responseFacebook, onGetUserByFacebook, user, navigation, onOpen]);
+    await onGetUserByFacebook(responseFacebook.authentication.accessToken);
+    if (!user) {
+      onOpen({
+        description: "Đã có lỗi xảy ra",
+        type: ToastTypeEnum.WARNING
+      });
+      return;
+    }
+    navigation.navigate(RoutesNameEnum.HOME);
+  }
 
-  useEffect(() => {
-    async function handleLoginByGoogle() {
-      if (response?.type !== "success") {
-        return;
-      }
-      const persistAuth = async () => {
-        await AsyncStorage.setItem("auth", JSON.stringify(response.authentication));
-      };
-      await persistAuth();
-      await onGetUserByGoogle(response.authentication?.accessToken || "");
-      if (!user) {
-        onOpen({
-          description: "Đã có lỗi xảy ra",
-          type: ToastTypeEnum.WARNING
-        });
-      }
+  async function handleLoginByGoogle() {
+    if (response?.type !== "success") {
+      return;
     }
-    handleLoginByGoogle();
-  }, [response, onGetUserByGoogle, user, navigation, onOpen]);
+    const persistAuth = async () => {
+      await AsyncStorage.setItem("auth", JSON.stringify(response.authentication));
+    };
+    await persistAuth();
+    await onGetUserByGoogle(response.authentication?.accessToken || "");
+    if (!user) {
+      onOpen({
+        description: "Đã có lỗi xảy ra",
+        type: ToastTypeEnum.WARNING
+      });
+    }
+  }
+
+  useFocusEffect(
+    useCallback(() => {
+      handleLoginByGoogle();
+    }, [handleLoginByGoogle])
+  );
+  useFocusEffect(
+    useCallback(() => {
+      handleLoginByFacebook();
+    }, [handleLoginByFacebook])
+  );
 
   const handleLogin = async (values: LoginFormValues) => {
     try {

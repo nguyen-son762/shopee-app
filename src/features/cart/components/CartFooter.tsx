@@ -4,7 +4,7 @@ import { useStoreDispatch, useStoreState } from "app/store";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import { convertNumberToPrice } from "app/utils/convertPrice";
 import Checkbox from "expo-checkbox";
-import React, { useMemo } from "react";
+import React, { memo, useMemo } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 
 const CartFooter = () => {
@@ -39,7 +39,6 @@ const CartFooter = () => {
       });
     updateCart(newCart);
   };
-  const purchaseProduct = () => {};
 
   return (
     <View
@@ -79,4 +78,4 @@ const CartFooter = () => {
   );
 };
 
-export default CartFooter;
+export default memo(CartFooter);

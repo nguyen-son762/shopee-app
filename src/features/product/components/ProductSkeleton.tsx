@@ -1,5 +1,5 @@
 import React, { memo } from "react";
-import { Image, Text, View, useWindowDimensions } from "react-native";
+import { Image, View, useWindowDimensions } from "react-native";
 import ShimmerPlaceHolder from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 const ProductSkeleton = () => {

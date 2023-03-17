@@ -1,5 +1,5 @@
 import { AuthDef } from "app/features/auth/types/auth.type";
-import { ModelDef, ProductDef } from "app/features/product/types/product.type";
+import { ProductDef } from "app/features/product/types/product.type";
 import { OrderStatusEnums } from "../constants/cart.constants";
 
 export type CartItemDef = {
@@ -15,8 +15,22 @@ export type CartItemDef = {
 };
 
 export type CreateOrderParams = {
-  user_id: string;
-  product_id: string;
-  model_id: string;
-  promotion_code: string | null;
+  user?: string;
+  product: string;
+  model: string;
+  promotion_code?: string;
+  amount: number;
 };
+
+export type GetCartResponse = {
+  _id: string;
+  address: string;
+  amount: number;
+  model: string;
+  note: string;
+  phonenumber: string;
+  product: ProductDef;
+  promotion_code: string;
+  status: OrderStatusEnums;
+  user: string;
+}[];

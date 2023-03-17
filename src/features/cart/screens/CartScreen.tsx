@@ -2,25 +2,46 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import Header from "app/components/layouts/Header";
 import { Theme } from "app/constants/theme.constants";
-import { useStoreState } from "app/store";
+import { useStoreDispatch, useStoreState } from "app/store";
 import { RootStackParams } from "app/types/routes.types";
-import React, { FC, useMemo } from "react";
+import React, { FC, useCallback, useMemo } from "react";
 import { ScrollView, Text, View, useWindowDimensions } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
-import CartRow from "../components/CartRow";
 import { CartDef } from "../model/cart.model";
-import Divider from "app/components/Divider";
-import Checkbox from "expo-checkbox";
 import CartRowContainer from "../components/CartRowContainer";
 import CartFooter from "../components/CartFooter";
+import { useFocusEffect } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CART_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 
 type CartScreenProps = NativeStackScreenProps<RootStackParams>;
 
-const CartScreen: FC<CartScreenProps> = ({ navigation }) => {
+const CartScreen: FC<CartScreenProps> = () => {
   const insets = useSafeAreaInsets();
   const statusBarHeight = insets.top;
-  const { cart } = useStoreState((state) => state.cart);
   const { height } = useWindowDimensions();
+  const { cart } = useStoreState((state) => state.cart);
+  const {
+    cart: { set: setCart, get: getCart }
+  } = useStoreDispatch();
+  useFocusEffect(
+    useCallback(() => {
+      getCart();
+      AsyncStorage.getItem(CART_IN_ASYNC_STORAGE).then((data) => {
+        if (data) {
+          setCart(
+            JSON.parse(data).map((item: Omit<CartDef, "selected">) => {
+              return {
+                ...item,
+                selected: false
+              };
+            })
+          );
+        }
+      });
+    }, [getCart, setCart])
+  );
+
   const cartModified = useMemo(() => {
     return cart.reduce((prev: Record<string, CartDef[]>, current: CartDef) => {
       if (!prev[current.item.category.name]) {

@@ -1,5 +1,4 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { AntDesign } from "@expo/vector-icons";
 import Header from "app/components/layouts/Header";
 import { Theme } from "app/constants/theme.constants";
 import React, { FC, memo } from "react";
@@ -10,7 +9,6 @@ interface LoginAndSignUpHeaderProps {
 }
 
 const LoginAndSignUpHeader: FC<LoginAndSignUpHeaderProps> = ({ title }) => {
-  const navigation = useNavigation();
   return (
     <View>
       <Header

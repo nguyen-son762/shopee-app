@@ -1,8 +1,9 @@
-import { AntDesign, Ionicons } from "@expo/vector-icons";
+import React from "react";
+import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { Theme } from "app/constants/theme.constants";
 import { FC, ReactNode } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 type HeaderProps = {
   rightContent?: ReactNode;

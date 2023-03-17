@@ -17,12 +17,12 @@ import { URL_IMAGE_CLOUDIARY } from "@env";
 import { Theme } from "app/constants/theme.constants";
 import { exactString } from "app/utils/exactOption";
 import { compareArray } from "app/utils/compareObject";
-import { useStoreDispatch } from "app/store";
+import { useStoreDispatch, useStoreState } from "app/store";
 import { ToastTypeEnum } from "app/features/app/toast/toast.type";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
+import { CART_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 
 type AddToCartModalProps = {
   isVisible: boolean;
@@ -35,6 +35,7 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
   const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const [amount, setAmount] = useState("1");
   const [options, setOptions] = useState<Record<string, string>>({});
+  const { user } = useStoreState((state) => state.auth);
   const {
     cart: { add: addToCart },
     toast: { onOpen }
@@ -60,7 +61,7 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
     return product.models.find((model) =>
       compareArray(exactString(model.name), Object.values(options))
     );
-  }, [options]);
+  }, [options, product.models]);
 
   const hanleClickOption = (name: string, option: string) => {
     const newOptions = { ...options };
@@ -86,11 +87,26 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
       return;
     }
     if (isAddToCart) {
-      addToCart({
-        item: product,
-        model: selectedProduct,
-        amount: Number(amount)
-      });
+      if (!user) {
+        await AsyncStorage.setItem(
+          CART_IN_ASYNC_STORAGE,
+          JSON.stringify([
+            {
+              item: product,
+              model: selectedProduct,
+              amount: Number(amount)
+            }
+          ])
+        );
+      } else {
+        await addToCart({
+          user: user?._id,
+          product: product._id || "",
+          model: selectedProduct._id,
+          amount: Number(amount),
+          promotion_code: "1"
+        });
+      }
       onOpen({
         type: ToastTypeEnum.SUCCESS,
         description: "Thêm vào giỏ hàng thành công"
@@ -98,16 +114,6 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
       close();
       return;
     }
-    await AsyncStorage.setItem(
-      ORDER_IN_ASYNC_STORAGE,
-      JSON.stringify([
-        {
-          item: product,
-          model: selectedProduct,
-          amount
-        }
-      ])
-    );
     close();
     navigation.navigate(RoutesNameEnum.PAYMENT);
   };
@@ -143,7 +149,7 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
                   {selectedProduct?.price
                     ? convertNumberToPrice(selectedProduct?.price)
                     : product.price_min === product.price_max
-                    ? `${convertNumberToPrice(product.price_min)}`
+                    ? convertNumberToPrice(product.price_min)
                     : `${convertNumberToPrice(product.price_min)}-${convertNumberToPrice(
                         product.price_max
                       )}`}

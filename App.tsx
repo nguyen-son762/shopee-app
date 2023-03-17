@@ -14,14 +14,19 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Theme } from "app/constants/theme.constants";
 import { Text } from "react-native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { RoutesNameEnum } from "app/types/routes.types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CART_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 
 const Tab = createBottomTabNavigator();
 
 Tab.Navigator;
 
 function App() {
+  React.useEffect(() => {
+    AsyncStorage.removeItem(CART_IN_ASYNC_STORAGE);
+  }, []);
+
   return (
     <StoreProvider store={store}>
       <NavigationContainer>
