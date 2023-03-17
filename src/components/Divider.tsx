@@ -12,9 +12,7 @@ const Divider: FC<DividerProps> = ({ color = "#ecf0f1" }) => {
       style={{
         backgroundColor: color
       }}
-    >
-      <Text>hehhs</Text>
-    </View>
+    ></View>
   );
 };
 

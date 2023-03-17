@@ -1,12 +1,13 @@
 import { AntDesign, FontAwesome, SimpleLineIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import React from "react";
 import { TouchableOpacity, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const ActionHeader = () => {
   const insets = useSafeAreaInsets();
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const statusBarHeight = insets.top;
   return (
     <View
@@ -26,7 +27,10 @@ const ActionHeader = () => {
         <TouchableOpacity>
           <FontAwesome name="share" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity className="flex-row items-center justify-center w-[35] h-[35] rounded-full bg-[#757670]">
+        <TouchableOpacity
+          onPress={() => navigation.navigate(RoutesNameEnum.CART)}
+          className="flex-row items-center justify-center w-[35] h-[35] rounded-full bg-[#757670]"
+        >
           <AntDesign name="shoppingcart" size={24} color="white" />
         </TouchableOpacity>
         <TouchableOpacity className="flex-row items-center justify-center w-[35] h-[35] rounded-full bg-[#757670]">

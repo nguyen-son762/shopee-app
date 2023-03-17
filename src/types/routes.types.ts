@@ -8,6 +8,7 @@ export enum RoutesNameEnum {
   CART = "Cart",
   VERIFY_OTP = "VerifyOTP",
   PRODUCT_DETAIL = "ProductDetail",
+  PAYMENT = "Payment"
 }
 
 export type RootStackParams = {
@@ -19,6 +20,7 @@ export type RootStackParams = {
   [RoutesNameEnum.PRODUCT_DETAIL]: {
     item: ProductDef;
   };
+  [RoutesNameEnum.PAYMENT]: undefined;
 };
 
 export type RouteItemDef = {

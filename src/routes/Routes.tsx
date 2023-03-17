@@ -6,6 +6,8 @@ import { AUTH_ROUTES, AuthStack } from "app/features/auth/routes/auth.routes";
 import { PRODUCT_ROUTES } from "app/features/product/routes/product.route";
 import HomeScreen from "app/features/home/screens/HomeScreen";
 import { CART_ROUTES, CartStack } from "app/features/cart/routes/cart.route";
+import PaymentScreen from "app/features/payment/screens/PaymentScreen";
+import { RoutesNameEnum } from "app/types/routes.types";
 
 const RootStack = createNativeStackNavigator();
 
@@ -19,7 +21,8 @@ export const AuthStackScreen = () => {
           component={route.component}
           options={{
             headerShown: false
-          }}></AuthStack.Screen>
+          }}
+        ></AuthStack.Screen>
       ))}
     </AuthStack.Navigator>
   );
@@ -35,7 +38,8 @@ export const CartStackScreen = () => {
           component={route.component}
           options={{
             headerShown: false
-          }}></CartStack.Screen>
+          }}
+        ></CartStack.Screen>
       ))}
     </CartStack.Navigator>
   );
@@ -45,7 +49,7 @@ export const RootStackScreen = () => {
   return (
     <RootStack.Navigator>
       <RootStack.Screen
-        name="Root"
+        name="Home"
         component={HomeScreen}
         options={{
           headerShown: false
@@ -58,8 +62,16 @@ export const RootStackScreen = () => {
           component={route.component}
           options={{
             headerShown: false
-          }}></RootStack.Screen>
+          }}
+        ></RootStack.Screen>
       ))}
+      <RootStack.Screen
+        name={RoutesNameEnum.PAYMENT}
+        component={PaymentScreen}
+        options={{
+          headerShown: false
+        }}
+      ></RootStack.Screen>
     </RootStack.Navigator>
   );
 };

@@ -1,0 +1,8 @@
+export enum OrderStatusEnums {
+  INCART = "INCART",
+  ORDERING = "ORDERING",
+  PICKING = "PICKING",
+  ORDERED = "ORDERED",
+  DELIVERING = "DELIVERING",
+  DONE = "DONE"
+}

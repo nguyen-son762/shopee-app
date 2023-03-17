@@ -25,7 +25,7 @@ const categories = [
   },
   {
     image: require("app/assets/images/hat_thumbnail.jpg"),
-    title: "Mũ"
+    title: "Mũ nam"
   }
 ];
 

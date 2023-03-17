@@ -59,6 +59,9 @@ function App() {
               tabBarLabel: ({ focused }) => (
                 <Text className={focused ? "text-primary" : "text-[#5a5a5a]"}>Giỏ hàng</Text>
               ),
+              tabBarStyle: {
+                display: "none"
+              },
               headerShown: false
             }}
             component={CartStackScreen}
@@ -80,7 +83,6 @@ function App() {
             }}
             component={AuthStackScreen}
           />
-
         </Tab.Navigator>
       </NavigationContainer>
     </StoreProvider>
@@ -88,9 +90,9 @@ function App() {
 }
 
 const getTabBarVisibility = (route: RouteProp<ParamListBase, "Root">) => {
-  const routeName = getFocusedRouteNameFromRoute(route);
+  const routeName = getFocusedRouteNameFromRoute(route) as RoutesNameEnum;
 
-  if (routeName == RoutesNameEnum.PRODUCT_DETAIL) {
+  if ([RoutesNameEnum.PRODUCT_DETAIL, RoutesNameEnum.PAYMENT].includes(routeName)) {
     return "none";
   }
   return "flex";

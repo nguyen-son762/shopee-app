@@ -6,10 +6,10 @@ import { FlatList, Image, View } from "react-native";
 type ImagesDescriptionProps = {
   images: string[];
   selectedImage: string;
-  onTapImage: (url: string)=>void
+  onTapImage: (url: string) => void;
 };
 
-const ImagesDescription: FC<ImagesDescriptionProps> = ({ images, selectedImage,onTapImage }) => {
+const ImagesDescription: FC<ImagesDescriptionProps> = ({ images, selectedImage, onTapImage }) => {
   return (
     <View>
       <FlatList
@@ -23,8 +23,8 @@ const ImagesDescription: FC<ImagesDescriptionProps> = ({ images, selectedImage,o
               borderColor: selectedImage === image.item ? Theme.color.primary : "#fff",
               borderWidth: 1
             }}
-            onTouchEnd={()=>onTapImage(image.item)}
-            >
+            onTouchEnd={() => onTapImage(image.item)}
+          >
             <Image
               className="w-[100] h-[100]"
               source={{

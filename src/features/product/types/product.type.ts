@@ -1,9 +1,13 @@
 export type ModelDef = {
-  _id?: string;
+  _id: string;
   name: string;
   price: number;
   promotion: number;
   images: string;
+};
+
+export type Category = {
+  name: string;
 };
 
 export type TierVariation = {
@@ -19,7 +23,7 @@ export type ItemRating = {
 
 export type ProductDef = {
   _id?: string;
-  category_id: string;
+  category: Category;
   name: string;
   price: number;
   images: string[];

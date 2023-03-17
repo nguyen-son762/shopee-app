@@ -22,6 +22,7 @@ export const products: ProductModel = {
     try {
       const result = await getProducts(payload);
       actions.set(result);
+      return result;
     } catch (err) {
       console.log("err", err);
     }

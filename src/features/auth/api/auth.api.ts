@@ -12,7 +12,10 @@ import {
 import { api } from "app/api/api";
 
 export const getUser = (user: AuthRequest): Promise<AuthResponse> => {
-  return api.post(AuthEndpointsEnum.LOGIN, user);
+  return api.post(AuthEndpointsEnum.LOGIN, {
+    phone_number: user.phone_number.replace("0", "+84"),
+    password: user.password
+  });
 };
 
 export const getUserByGoogle = async (accessToken = ""): Promise<GoogleAuthResponse> => {

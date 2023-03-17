@@ -1,6 +1,6 @@
 import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, EXPO_CLIENT_ID, FACEBOOK_CLIENT_ID } from "@env";
 
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { Text, View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
@@ -20,11 +20,12 @@ import { useStoreState, useStoreDispatch } from "app/store";
 import LoginAndSignUpHeader from "../../components/LoginAndSignUpHeader";
 import DefaultLayout from "app/components/layouts/DefaultLayout";
 import { ToastTypeEnum } from "app/features/app/toast/toast.type";
+import { useFocusEffect } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParams>;
 
 interface LoginFormValues {
-  email: string;
+  phone_number: string;
   password: string;
 }
 
@@ -44,15 +45,17 @@ const LoginScreen = ({ navigation }: Props) => {
     clientId: FACEBOOK_CLIENT_ID
   });
   const initialValues = {
-    email: "",
+    phone_number: "",
     password: ""
   };
 
-  useEffect(() => {
-    if (user) {
-      navigation.navigate(RoutesNameEnum.HOME);
-    }
-  }, [user, navigation]);
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        navigation.navigate(RoutesNameEnum.HOME);
+      }
+    }, [user])
+  );
 
   useEffect(() => {
     async function handleLoginByFacebook() {
@@ -118,7 +121,7 @@ const LoginScreen = ({ navigation }: Props) => {
           <View>
             <View className="px-6 mt-2">
               <CustomInput
-                value={values.email}
+                value={values.phone_number}
                 icon={AntDesign}
                 iconName="user"
                 size={22}
@@ -126,8 +129,8 @@ const LoginScreen = ({ navigation }: Props) => {
                 borderWidth={1}
                 borderColor="#cececd"
                 showIcon
-                placeholder="Email/Tên người dùng"
-                onChangeText={handleChange("email")}
+                placeholder="Số điện thoại"
+                onChangeText={handleChange("phone_number")}
               />
               <CustomInput
                 value={values.password}

@@ -3,7 +3,9 @@ import { ProductDef } from "./../features/product/types/product.type";
 export const products: ProductDef[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item) => {
   return {
     _id: item + "",
-    category_id: "64098e1bb25d32b440aeb765",
+    category: {
+      name: "Thời trang nữ"
+    },
     name: "Áo Sweater CUNA Áo Sweater Nam Nữ Form Rộng Chất Cotton Nỉ Ngoại Hàng Xuất Cao Cấp Trơn Cổ Tròn Dài Tay Local Brand",
     price: 159000,
     images: [
@@ -16,54 +18,63 @@ export const products: ProductDef[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((item)
     thumb_url: "v1678350539/378264a1a6c4c0d50ae53a48815f4b0d_gh26af.jpg",
     models: [
       {
+        _id: "1",
         name: "Trắng,M",
         price: 159000,
         promotion: 0,
         images: "v1678350539/378264a1a6c4c0d50ae53a48815f4b0d_gh26af.jpg"
       },
       {
+        _id: "2",
         name: "Đen,M",
         price: 159000,
         promotion: 0,
         images: "v1678350590/19b53e3fe24287877cbdacbdad1e6c37_ipvhm3.jpg"
       },
       {
+        _id: "3",
         name: "Xanh Dương,M",
         price: 159000,
         promotion: 0,
         images: "v1678350635/49bc7ecec1cc2aaedb5732b88b867389_v00l4z.jpg"
       },
       {
+        _id: "4",
         name: "Trắng,L",
         price: 159000,
         promotion: 0,
         images: "v1678350539/378264a1a6c4c0d50ae53a48815f4b0d_gh26af.jpg"
       },
       {
+        _id: "5",
         name: "Đen,L",
         price: 159000,
         promotion: 0,
         images: "v1678350590/19b53e3fe24287877cbdacbdad1e6c37_ipvhm3.jpg"
       },
       {
+        _id: "6",
         name: "Xanh Dương,L",
         price: 200000,
         promotion: 0,
         images: "v1678350635/49bc7ecec1cc2aaedb5732b88b867389_v00l4z.jpg"
       },
       {
+        _id: "6",
         name: "Trắng,XL",
         price: 159000,
         promotion: 0,
         images: "v1678350539/378264a1a6c4c0d50ae53a48815f4b0d_gh26af.jpg"
       },
       {
+        _id: "6",
         name: "Đen,XL",
         price: 159000,
         promotion: 0,
         images: "v1678350590/19b53e3fe24287877cbdacbdad1e6c37_ipvhm3.jpg"
       },
       {
+        _id: "6",
         name: "Xanh Dương,XL",
         price: 159000,
         promotion: 0,

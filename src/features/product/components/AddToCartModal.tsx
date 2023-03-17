@@ -17,15 +17,29 @@ import { URL_IMAGE_CLOUDIARY } from "@env";
 import { Theme } from "app/constants/theme.constants";
 import { exactString } from "app/utils/exactOption";
 import { compareArray } from "app/utils/compareObject";
+import { useStoreDispatch } from "app/store";
+import { ToastTypeEnum } from "app/features/app/toast/toast.type";
+import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 
 type AddToCartModalProps = {
   isVisible: boolean;
   close: () => void;
   product: ProductDef;
+  isAddToCart: boolean;
 };
 
-const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) => {
+const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, isAddToCart }) => {
+  const navigation = useNavigation<NavigationProp<RootStackParams>>();
   const [amount, setAmount] = useState("1");
+  const [options, setOptions] = useState<Record<string, string>>({});
+  const {
+    cart: { add: addToCart },
+    toast: { onOpen }
+  } = useStoreDispatch();
+
   const onChangeAmount = (text: string) => {
     if (text === "0") {
       setAmount("");
@@ -37,7 +51,7 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
     }
     setAmount(text.replace(/[^0-9]/g, ""));
   };
-  const [options, setOptions] = useState<Record<string, string>>({});
+
   const selectedProduct = useMemo(() => {
     const exactNameOfProduct = exactString(product.models[0].name);
     if (exactNameOfProduct.length !== Object.keys(options).length) {
@@ -57,13 +71,45 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
     }
     setOptions(newOptions);
   };
+
   const increase = () => {
     const newAmount = Number(amount) + 1;
     setAmount(newAmount > 999 ? "999" : `${newAmount}`);
   };
+
   const decrease = () => {
     const newAmount = Number(amount) - 1;
     setAmount(newAmount <= 0 ? "1" : `${newAmount}`);
+  };
+  const handleConfirm = async () => {
+    if (!selectedProduct) {
+      return;
+    }
+    if (isAddToCart) {
+      addToCart({
+        item: product,
+        model: selectedProduct,
+        amount: Number(amount)
+      });
+      onOpen({
+        type: ToastTypeEnum.SUCCESS,
+        description: "Thêm vào giỏ hàng thành công"
+      });
+      close();
+      return;
+    }
+    await AsyncStorage.setItem(
+      ORDER_IN_ASYNC_STORAGE,
+      JSON.stringify([
+        {
+          item: product,
+          model: selectedProduct,
+          amount
+        }
+      ])
+    );
+    close();
+    navigation.navigate(RoutesNameEnum.PAYMENT);
   };
 
   return (
@@ -72,7 +118,8 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
         style={{
           flex: 1
         }}
-        behavior="position">
+        behavior="position"
+      >
         <View className="flex-col h-[100vh]">
           <View className="bg-black h-[300] opacity-75 flex-1" onTouchEnd={close}></View>
           <View className="bg-white py-4 px-2 pb-[30]">
@@ -131,7 +178,8 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
                                 backgroundColor: "#f5f5f5"
                               }
                         }
-                        className="flex-row items-center justify-center py-1 px-2 rounded-sm min-w-[50] min-h-[30]">
+                        className="flex-row items-center justify-center py-1 px-2 rounded-sm min-w-[50] min-h-[30]"
+                      >
                         {tier_variation.images && tier_variation.images[index] && (
                           <Image
                             className="w-[26] h-[26]"
@@ -157,14 +205,16 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
                 style={{
                   borderColor: "#e8e8e8",
                   borderWidth: 1
-                }}>
+                }}
+              >
                 <TouchableOpacity
                   className="flex-row items-center px-1"
                   style={{
                     borderRightColor: "#e8e8e8",
                     borderRightWidth: 1
                   }}
-                  onPress={decrease}>
+                  onPress={decrease}
+                >
                   <AntDesign
                     name="minus"
                     size={22}
@@ -189,7 +239,8 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
                     borderLeftColor: "#e8e8e8",
                     borderLeftWidth: 1
                   }}
-                  onPress={increase}>
+                  onPress={increase}
+                >
                   <AntDesign
                     name="plus"
                     size={22}
@@ -206,15 +257,19 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product }) 
                 shadowOffset: { width: 0, height: -3 },
                 shadowOpacity: 0.2,
                 shadowRadius: 3
-              }}>
+              }}
+            >
               <TouchableOpacity
                 className={`${selectedProduct ? "bg-primary" : "bg-[#e8e8e8]"} py-3 rounded-sm`}
-                disabled={!selectedProduct}>
+                disabled={!selectedProduct}
+                onPress={handleConfirm}
+              >
                 <Text
                   className={`text-center text-base ${
                     selectedProduct ? "text-white" : "text-[#a5a5a5]"
-                  }`}>
-                  Thêm vào Giỏ hàng
+                  }`}
+                >
+                  {isAddToCart ? "Thêm vào Giỏ hàng" : "Mua ngay"}
                 </Text>
               </TouchableOpacity>
             </View>

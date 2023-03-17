@@ -21,7 +21,7 @@ export type AuthDef = {
 };
 
 export type AuthRequest = {
-  email: string;
+  phone_number: string;
   password: string;
 };
 

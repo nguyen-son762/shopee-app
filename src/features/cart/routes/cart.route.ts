@@ -10,6 +10,5 @@ export const CART_ROUTES: RouteItemDef[] = [
     component: CartScreen,
     isPrivate: false,
     presentation: "fullScreenModal"
-  },
-  
+  }
 ];

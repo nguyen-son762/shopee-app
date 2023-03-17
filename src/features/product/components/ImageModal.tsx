@@ -26,12 +26,7 @@ const ImageModal: FC<ImageModalProps> = ({ isVisible, images, close }) => {
     <Modal animationType="slide" transparent={true} visible={isVisible}>
       <View className="bg-black relative min-h-full">
         <View className=" mt-10 px-5 flex-row w-full justify-between items-center">
-          <AntDesign
-            name="arrowleft"
-            size={30}
-            color={Theme.color.primary}
-            onPress={close}
-          />
+          <AntDesign name="arrowleft" size={30} color={Theme.color.primary} onPress={close} />
           <Text className="text-white">
             {numOfImage + 1} / {images.length}
           </Text>

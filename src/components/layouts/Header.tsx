@@ -14,15 +14,17 @@ const Header: FC<HeaderProps> = ({ rightContent, centerContent, leftContent }) =
   const navigation = useNavigation();
   return (
     <View
-      className="flex-row items-center shadow-md bg-white p-3"
+      className="flex-row items-center shadow-md bg-white"
       style={{
         shadowColor: "#171717",
         shadowOpacity: 0.2,
-        shadowRadius: 3
-      }}>
+        shadowRadius: 3,
+        height: 50
+      }}
+    >
       <View className="w-[30%]">
         {leftContent || (
-          <TouchableOpacity>
+          <TouchableOpacity className="pl-3">
             <Ionicons
               name="arrow-back"
               size={30}
@@ -32,10 +34,10 @@ const Header: FC<HeaderProps> = ({ rightContent, centerContent, leftContent }) =
           </TouchableOpacity>
         )}
       </View>
-      <View className="flex-1 text-black flex-row items-center justify-center">{centerContent}</View>
-      <View className="w-[30%] flex-row justify-end pr-1">
-        {rightContent}
+      <View className="flex-1 text-black flex-row items-center justify-center">
+        {centerContent}
       </View>
+      <View className="w-[30%] flex-row justify-end pr-1">{rightContent}</View>
     </View>
   );
 };

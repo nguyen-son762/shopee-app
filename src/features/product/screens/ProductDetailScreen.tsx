@@ -1,6 +1,6 @@
 import { useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParams } from "app/types/routes.types";
+import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import React, { FC, memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   SafeAreaView,
@@ -14,7 +14,8 @@ import {
   FlatList,
   ActivityIndicator,
   Modal,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  LogBox
 } from "react-native";
 import { ProductDef } from "../types/product.type";
 import { URL_IMAGE_CLOUDIARY } from "@env";
@@ -33,6 +34,8 @@ import { products } from "app/mock/product";
 import Product from "../components/Product";
 import AddToCartModal from "../components/AddToCartModal";
 import ImageModal from "../components/ImageModal";
+import CustomToast from "app/components/Toast/CustomToast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type ProductDetailProps = NativeStackScreenProps<RootStackParams>;
 const screenWidth = Dimensions.get("window").width;
@@ -46,11 +49,16 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
   const [isShowAllDescription, setIsShowAllDescription] = useState(false);
   const [isVisibleModalAddToCart, setIsVisibleModalAddToCart] = useState(false);
   const [isVisibleModalImages, setIsVisibleModalImages] = useState(false);
+  const [isAddToCart, setIsAddToCart] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
   const totalRating = useMemo(
     () => product.item_rating.rating_count.reduce((current, prev) => prev + current, 0),
     [product]
   );
+
+  useEffect(() => {
+    LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
+  }, []);
   useEffect(() => {
     setNumOfImage(carouselImagesRef.current?.getCurrentIndex() || 0);
   }, [selectedImage]);
@@ -66,7 +74,9 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
       className="flex-col relative"
       style={{
         height: height - 20
-      }}>
+      }}
+    >
+      <CustomToast />
       <ScrollView className="flex-1">
         <ActionHeader />
         <ImageModal
@@ -102,7 +112,8 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             style={{
               bottom: 10,
               right: 10
-            }}>
+            }}
+          >
             <Text className="text-[#747474] text-base">
               {numOfImage + 1} / {product.images.length}
             </Text>
@@ -122,7 +133,8 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
               className="text-lg"
               style={{
                 width: "80%"
-              }}>
+              }}
+            >
               {product.name}
             </Text>
             <DiscountLabel rawDiscount={product.raw_discount} />
@@ -157,7 +169,8 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             className="h-[200] overflow-hidden"
             style={{
               height: isShowAllDescription ? "auto" : 200
-            }}>
+            }}
+          >
             <RenderHTML
               contentWidth={width}
               source={{
@@ -173,7 +186,8 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
 
           <TouchableOpacity
             className="mt-3 flex-row justify-center items-center gap-x-2 pb-3"
-            onPress={() => setIsShowAllDescription(!isShowAllDescription)}>
+            onPress={() => setIsShowAllDescription(!isShowAllDescription)}
+          >
             <Text className="text-primary text-lg">
               {isShowAllDescription ? "Thu gọn" : "Xem thêm"}
             </Text>
@@ -206,7 +220,8 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
                 <View
                   style={{
                     width: (screenWidth - 16) / 2 - 4
-                  }}>
+                  }}
+                >
                   <Product
                     navigation={navigation}
                     product={product.item}
@@ -222,16 +237,27 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
       <View className="flex-row">
         <TouchableOpacity
           className="flex-1 bg-[#26a997] flex-col justify-center items-center py-1"
-          onPress={() => setIsVisibleModalAddToCart(true)}>
+          onPress={() => {
+            setIsAddToCart(true);
+            setIsVisibleModalAddToCart(true);
+          }}
+        >
           <FontAwesome name="cart-plus" size={28} color="#fff" />
           <Text className="text-white text-xs">Thêm vào giỏ hàng</Text>
         </TouchableOpacity>
-        <TouchableOpacity className="flex-1 bg-[#ee4d2d] flex-row items-center justify-center py-1">
+        <TouchableOpacity
+          className="flex-1 bg-[#ee4d2d] flex-row items-center justify-center py-1"
+          onPress={() => {
+            setIsAddToCart(false);
+            setIsVisibleModalAddToCart(true);
+          }}
+        >
           <Text className="text-white text-base">Mua ngay</Text>
         </TouchableOpacity>
       </View>
 
       <AddToCartModal
+        isAddToCart={isAddToCart}
         product={product}
         isVisible={isVisibleModalAddToCart}
         close={() => setIsVisibleModalAddToCart(false)}
