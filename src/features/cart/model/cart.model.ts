@@ -7,6 +7,7 @@ import store from "app/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export type CartDef = {
+  _id?: string;
   item: ProductDef;
   amount: number;
   selected: boolean;
@@ -57,10 +58,11 @@ export const cart: CartModel = {
       const userInAsyncStorage = await AsyncStorage.getItem(AUTH_IN_ASYNC_STORAGE);
       const parseUser = JSON.parse(userInAsyncStorage || "");
       const { user } = store.getState().auth;
-      if (user) {
+      if (user?._id) {
         const data = await getCart(user._id || parseUser._id);
         const mappingData = ((data.data as GetCartResponse) || []).map((item) => {
           return {
+            _id: item._id || "",
             item: item.product,
             amount: item.amount,
             selected: false,
@@ -72,7 +74,7 @@ export const cart: CartModel = {
         actions.set(mappingData);
       }
     } catch (err) {
-      console.warn("err", err);
+      console.log("err", err);
     }
   }),
   set: action((state, payload) => {

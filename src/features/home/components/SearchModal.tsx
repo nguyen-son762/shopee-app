@@ -1,52 +1,78 @@
-import React, { FC, memo, useEffect, useRef } from "react";
+import React, { FC, memo, useCallback, useEffect, useRef } from "react";
 import { Modal, Text, TextInput, View } from "react-native";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { Theme } from "app/constants/theme.constants";
 import CustomButton from "app/components/CustomButton";
+import { Formik } from "formik";
+import { useFocusEffect } from "@react-navigation/native";
 
 interface Props {
   open: boolean;
   close: () => void;
+  onSearch: (text: string) => void;
 }
 
-const SearchModal: FC<Props> = ({ open, close }) => {
+type initialForm = {
+  keyword: string;
+};
+
+const SearchModal: FC<Props> = ({ open, close, onSearch }) => {
   const history = ["Áo nam", "Bút bi", "Gấu bông"];
   const searchRef = useRef<TextInput>(null);
-  useEffect(() => {
-    if (searchRef.current) {
-      searchRef.current.focus();
-    }
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (searchRef.current) {
+        searchRef.current.focus();
+      }
+    }, [])
+  );
+  const handleSubmitForm = (values: initialForm) => {
+    onSearch(values.keyword);
+  };
 
   return (
     <Modal animationType="fade" transparent={true} visible={open}>
       <View className="bg-white pt-10 h-full mt-2">
         <View className="flex-row h-10 items-center px-2">
           <Ionicons name="arrow-back" size={28} color={Theme.color.primary} onPress={close} />
-          <TextInput
-            className="h-full flex-1 px-3 ml-1"
-            placeholder="Tìm kiếm"
-            style={{
-              borderWidth: 1,
-              borderColor: Theme.color.primary,
-              borderBottomLeftRadius: 6,
-              borderTopLeftRadius: 6
+          <Formik
+            initialValues={{
+              keyword: ""
             }}
-            ref={searchRef}
-          />
-          <CustomButton
-            classNames="h-full w-12 flex-row justify-center items-center"
-            onPress={() => {}}
-            icon={AntDesign}
-            iconName="search1"
-            size={22}
-            iconColor={Theme.color.white}
-            style={{
-              borderTopRightRadius: 6,
-              borderBottomRightRadius: 6,
-              overflow: "hidden"
-            }}
-          />
+            onSubmit={handleSubmitForm}
+          >
+            {({ handleChange, handleSubmit, values }) => (
+              <>
+                <TextInput
+                  className="h-full flex-1 px-3 ml-1"
+                  placeholder="Tìm kiếm"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: Theme.color.primary,
+                    borderBottomLeftRadius: 6,
+                    borderTopLeftRadius: 6
+                  }}
+                  value={values.keyword}
+                  ref={searchRef}
+                  onChangeText={handleChange("keyword")}
+                  onSubmitEditing={() => handleSubmit()}
+                />
+                <CustomButton
+                  classNames="h-full w-12 flex-row justify-center items-center"
+                  onPress={() => handleSubmit()}
+                  icon={AntDesign}
+                  iconName="search1"
+                  size={22}
+                  iconColor={Theme.color.white}
+                  style={{
+                    borderTopRightRadius: 6,
+                    borderBottomRightRadius: 6,
+                    overflow: "hidden"
+                  }}
+                />
+              </>
+            )}
+          </Formik>
         </View>
 
         <View className="mt-3">

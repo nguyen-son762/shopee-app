@@ -8,11 +8,12 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  LogBox
+  LogBox,
+  Text
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RootStackParams } from "app/types/routes.types";
+import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import Header from "../components/HomeHeader";
 import { Dimensions } from "react-native";
 import SearchModal from "../components/SearchModal";
@@ -20,18 +21,29 @@ import { useStoreDispatch, useStoreState } from "app/store";
 import Product from "app/features/product/components/Product";
 import Category from "../components/Category";
 import ProductLoader from "../components/ProductLoader";
+import { isCloseToBottom } from "app/utils/closeToBottom";
+import DropDownPicker from "react-native-dropdown-picker";
+import { Theme } from "app/constants/theme.constants";
 
 const screenWidth = Dimensions.get("window").width;
 
 type Props = NativeStackScreenProps<RootStackParams>;
 
-export default function HomeScreen({ navigation }: Props) {
+export default function HomeScreen({ route, navigation }: Props) {
   const [modalVisible, setModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isEnd, setIsEnd] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [filterType, setFilterType] = useState(null);
+  const [sortFields, setSortFields] = useState([
+    { label: "Mặc định", value: "" },
+    { label: "Giá tăng dần", value: "asc" },
+    { label: "Giá giảm dần", value: "desc" }
+  ]);
   const {
-    products: { getProducts }
+    products: { getProducts, reset }
   } = useStoreDispatch();
-  const { products } = useStoreState((state) => state.products);
+  const { products, page, totalPage } = useStoreState((state) => state.products);
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
@@ -49,38 +61,78 @@ export default function HomeScreen({ navigation }: Props) {
 
   useEffect(() => {
     handleCallApi();
-  }, [getProducts, handleCallApi]);
+  }, []);
 
-  const isCloseToBottom = ({
-    layoutMeasurement,
-    contentOffset,
-    contentSize
-  }: {
-    layoutMeasurement: NativeScrollSize;
-    contentOffset: NativeScrollPoint;
-    contentSize: NativeScrollSize;
-  }) => {
-    const paddingToBottom = 20;
-    return layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom;
-  };
   const handleScroll = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     if (isCloseToBottom(e.nativeEvent)) {
       handleLoadMore();
     }
   };
-  const handleLoadMore = () => {};
+  const handleLoadMore = async () => {
+    if (page + 1 > totalPage || isEnd) {
+      setIsEnd(true);
+      return;
+    }
+    await getProducts({
+      limit: 10,
+      page: page + 1,
+      sort: filterType ? filterType : undefined
+    });
+  };
+
+  const handleSearch = (keyword: string) => {
+    navigation.navigate(RoutesNameEnum.SEARCH, {
+      keyword
+    });
+    setModalVisible(false);
+  };
+
+  const filterByPrice = async (value: string | null) => {
+    try {
+      setLoading(true);
+      reset();
+      await getProducts({
+        limit: 10,
+        sort: value ? value : undefined
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <SafeAreaView>
       <Header openSearchModal={() => setModalVisible(true)} />
-      <SearchModal open={modalVisible} close={() => setModalVisible(false)} />
+      <SearchModal
+        open={modalVisible}
+        close={() => setModalVisible(false)}
+        onSearch={(keyword) => handleSearch(keyword)}
+      />
       <ScrollView onScroll={(e) => handleScroll(e)}>
         <Category />
-        {/* <Button title="Modal" onPress={() => setModalVisible(true)} />
-
-      <Button title="Login" onPress={() => navigation.navigate(RoutesNameEnum.LOGIN)} />
-      <Button title="Verify" onPress={() => navigation.navigate(RoutesNameEnum.VERIFY_OTP)} /> */}
-        <View className="bg-transparent mx-2">
+        <View className="relative z-20 my-3">
+          <DropDownPicker
+            style={{
+              borderColor: Theme.color.primary,
+              width: 200
+            }}
+            placeholder="Sắp xếp theo giá"
+            textStyle={{
+              color: Theme.color.primary
+            }}
+            dropDownContainerStyle={{
+              borderColor: Theme.color.primary
+            }}
+            open={open}
+            value={filterType}
+            items={sortFields}
+            setOpen={setOpen}
+            setValue={setFilterType}
+            setItems={setSortFields}
+            onChangeValue={(e) => filterByPrice(e)}
+          />
+        </View>
+        <View className="bg-transparent mx-2 relative z-10">
           {loading ? (
             <ProductLoader />
           ) : (
@@ -93,7 +145,13 @@ export default function HomeScreen({ navigation }: Props) {
                 marginBottom: 10
               }}
               keyExtractor={(item, index) => `${item._id || ""}${index}`}
-              ListFooterComponent={<ActivityIndicator size="large" color="#ee4d2d" />}
+              ListFooterComponent={
+                isEnd ? (
+                  <Text className="text-center text-primary">Tất cả sản phầm đã được hiển thị</Text>
+                ) : (
+                  <ActivityIndicator size="large" color="#ee4d2d" />
+                )
+              }
               renderItem={(product) => (
                 <View
                   style={{

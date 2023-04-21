@@ -9,3 +9,5 @@ export const ORDER_IN_ASYNC_STORAGE = "orders";
 export const CART_IN_ASYNC_STORAGE = "cart";
 
 export const AUTH_IN_ASYNC_STORAGE = "auth";
+
+export const ADDRESS_IN_ASYNC_STORAGE = "address";

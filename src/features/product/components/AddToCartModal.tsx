@@ -1,4 +1,4 @@
-import React, { FC, useMemo, useState } from "react";
+import React, { FC, memo, useMemo, useState } from "react";
 import {
   Image,
   Keyboard,
@@ -22,7 +22,7 @@ import { ToastTypeEnum } from "app/features/app/toast/toast.type";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { CART_IN_ASYNC_STORAGE } from "app/constants/common.constants";
+import { CART_IN_ASYNC_STORAGE, ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 
 type AddToCartModalProps = {
   isVisible: boolean;
@@ -113,6 +113,17 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
       });
       close();
       return;
+    } else {
+      await AsyncStorage.setItem(
+        ORDER_IN_ASYNC_STORAGE,
+        JSON.stringify([
+          {
+            item: product,
+            model: selectedProduct,
+            amount: Number(amount)
+          }
+        ])
+      );
     }
     close();
     navigation.navigate(RoutesNameEnum.PAYMENT);
@@ -135,7 +146,7 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
                   <Image
                     className="w-[120] h-[120]"
                     source={{
-                      uri: `${URL_IMAGE_CLOUDIARY || ""}${
+                      uri: `${URL_IMAGE_CLOUDIARY || ""}/${
                         selectedProduct?.images || product.thumb_url
                       }`
                     }}
@@ -190,7 +201,7 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
                           <Image
                             className="w-[26] h-[26]"
                             source={{
-                              uri: `${URL_IMAGE_CLOUDIARY}${tier_variation.images[index]}`
+                              uri: `${URL_IMAGE_CLOUDIARY}/${tier_variation.images[index]}`
                             }}
                           />
                         )}
@@ -286,4 +297,4 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
   );
 };
 
-export default AddToCartModal;
+export default memo(AddToCartModal);

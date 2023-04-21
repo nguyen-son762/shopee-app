@@ -1,7 +1,7 @@
-import { useRoute } from "@react-navigation/native";
+import { useFocusEffect, useRoute } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { RootStackParams } from "app/types/routes.types";
-import React, { FC, memo, useEffect, useMemo, useRef, useState } from "react";
+import React, { FC, memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   SafeAreaView,
   Text,
@@ -29,30 +29,73 @@ import RenderHTML from "react-native-render-html";
 import Divider from "app/components/Divider";
 import { Theme } from "app/constants/theme.constants";
 import ReviewsProduct from "../components/ReviewsProduct";
-import { products } from "app/mock/product";
 import Product from "../components/Product";
 import AddToCartModal from "../components/AddToCartModal";
 import ImageModal from "../components/ImageModal";
 import CustomToast from "app/components/Toast/CustomToast";
+import { getProductById, getProducts } from "../api/product.api";
+import { useStoreDispatch, useStoreState } from "app/store";
+import { likedProduct } from "app/features/auth/api/auth.api";
 
 type ProductDetailProps = NativeStackScreenProps<RootStackParams>;
 const screenWidth = Dimensions.get("window").width;
 
 const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
+  const { user } = useStoreState((state) => state.auth);
+  const {
+    auth: { set },
+  } = useStoreDispatch();
   const { width, height } = useWindowDimensions();
   const route = useRoute();
   const product = useMemo(() => (route?.params as { item: ProductDef })?.item, [route?.params]);
-  const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
+const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
+  const [products, setProducts] = useState<ProductDef[]>([]);
   const [numOfImage, setNumOfImage] = useState(0);
   const [isShowAllDescription, setIsShowAllDescription] = useState(false);
   const [isVisibleModalAddToCart, setIsVisibleModalAddToCart] = useState(false);
   const [isVisibleModalImages, setIsVisibleModalImages] = useState(false);
   const [isAddToCart, setIsAddToCart] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
+  const [liked, setLiked] = useState(false);
   const totalRating = useMemo(
     () => product.item_rating.rating_count.reduce((current, prev) => prev + current, 0),
     [product]
   );
+
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        const likedProduct = user.liked?.find((item) => item.product === product._id);
+        if (likedProduct) {
+          setLiked(true);
+        }
+      }
+      // const id =(route.params as any)?.item?._id
+      // getProductById(id).then(data=>{
+      //   console.warn('data',data)
+      // }).catch(err=>{
+      //   console.warn(err)
+      // })
+      getRecommendProducts().then((data) => {
+        setProducts(data.data);
+      });
+    }, [])
+  );
+  useFocusEffect(
+    useCallback(() => {
+      if (user) {
+        const likedProduct = user.liked?.find((item) => item.product === product._id);
+        if (likedProduct) {
+          setLiked(true);
+        }
+      }
+    }, [user, product])
+  );
+  const getRecommendProducts = async () => {
+    return await getProducts({
+      category: product.category._id
+    });
+  };
 
   useEffect(() => {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
@@ -69,13 +112,33 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
     });
   };
 
+  const handleLiked =async () => {
+    try{
+      if(!user){
+        return
+      }
+      const data = await likedProduct({
+        user_id: user?._id,
+        product: product._id
+      })
+      console.warn('data.data',data.data)
+      set({
+        data:data.data,
+        access_token: user.access_token
+      })
+      setLiked(!liked);
+    }
+    catch(err){
+      console.log('err',err)
+    }
+  };
+
   return (
     <SafeAreaView
       className="flex-col relative"
       style={{
         height: height - 20
-      }}
-    >
+      }}>
       <CustomToast />
       <ScrollView className="flex-1">
         <ActionHeader />
@@ -92,12 +155,15 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
               setNumOfImage(carouselImagesRef.current?.getCurrentIndex() || 0);
               setSelectedImage(product.images[carouselImagesRef.current?.getCurrentIndex() || 0]);
             }}
+            keyboardShouldPersistTaps="always"
             data={product.images}
             renderItem={({ item }: { item: string }) => (
-              <TouchableWithoutFeedback onPress={() => setIsVisibleModalImages(true)}>
+              <TouchableWithoutFeedback
+                onPress={() => setIsVisibleModalImages(true)}
+                delayLongPress={3000}>
                 <Image
                   source={{
-                    uri: `${URL_IMAGE_CLOUDIARY}${item}`
+                    uri: `${URL_IMAGE_CLOUDIARY}/${item}`
                   }}
                   style={{
                     width: screenWidth,
@@ -112,8 +178,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             style={{
               bottom: 10,
               right: 10
-            }}
-          >
+            }}>
             <Text className="text-[#747474] text-base">
               {numOfImage + 1} / {product.images.length}
             </Text>
@@ -127,14 +192,20 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             selectedImage={selectedImage}
             onTapImage={(url) => onClickImage(url)}
           />
-
-          <View className="flex-row justify-between mt-8">
+          <View className="flex-row justify-end mt-4 mr-5">
+            <AntDesign
+              name={liked ? "heart" : "hearto"}
+              size={24}
+              color={Theme.color.primary}
+              onPress={handleLiked}
+            />
+          </View>
+          <View className="flex-row justify-between mt-3">
             <Text
               className="text-lg"
               style={{
                 width: "80%"
-              }}
-            >
+              }}>
               {product.name}
             </Text>
             <DiscountLabel rawDiscount={product.raw_discount} />
@@ -169,8 +240,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
             className="h-[200] overflow-hidden"
             style={{
               height: isShowAllDescription ? "auto" : 200
-            }}
-          >
+            }}>
             <RenderHTML
               contentWidth={width}
               source={{
@@ -186,8 +256,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
 
           <TouchableOpacity
             className="mt-3 flex-row justify-center items-center gap-x-2 pb-3"
-            onPress={() => setIsShowAllDescription(!isShowAllDescription)}
-          >
+            onPress={() => setIsShowAllDescription(!isShowAllDescription)}>
             <Text className="text-primary text-lg">
               {isShowAllDescription ? "Thu gọn" : "Xem thêm"}
             </Text>
@@ -214,14 +283,13 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
                 justifyContent: "space-between",
                 marginBottom: 10
               }}
-              keyExtractor={(item, index) => `${item._id || ""}${index}`}
+              keyExtractor={(item: ProductDef, index) => `${item._id || ""}${index}`}
               ListFooterComponent={<ActivityIndicator size="large" color="#ee4d2d" />}
               renderItem={(product) => (
                 <View
                   style={{
                     width: (screenWidth - 16) / 2 - 4
-                  }}
-                >
+                  }}>
                   <Product
                     navigation={navigation}
                     product={product.item}
@@ -240,8 +308,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
           onPress={() => {
             setIsAddToCart(true);
             setIsVisibleModalAddToCart(true);
-          }}
-        >
+          }}>
           <FontAwesome name="cart-plus" size={28} color="#fff" />
           <Text className="text-white text-xs">Thêm vào giỏ hàng</Text>
         </TouchableOpacity>
@@ -250,8 +317,7 @@ const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
           onPress={() => {
             setIsAddToCart(false);
             setIsVisibleModalAddToCart(true);
-          }}
-        >
+          }}>
           <Text className="text-white text-base">Mua ngay</Text>
         </TouchableOpacity>
       </View>

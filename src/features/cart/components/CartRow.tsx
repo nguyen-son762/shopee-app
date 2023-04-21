@@ -82,7 +82,7 @@ const CartRow: FC<CartRowProps> = ({ item }) => {
           <Image
             className="h-[70] w-[70] mr-2"
             source={{
-              uri: `${URL_IMAGE_CLOUDIARY || ""}${item.model.images}`
+              uri: `${URL_IMAGE_CLOUDIARY || ""}/${item.model.images}`
             }}
           />
           <View className="flex-col pt-2 w-full">

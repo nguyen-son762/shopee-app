@@ -1,4 +1,4 @@
-import { SignUpUserRequest, SignUpResponse, VerifyOtpRequest } from "./../types/auth.type";
+import { SignUpUserRequest, SignUpResponse, VerifyOtpRequest, AuthDef, LikedProductRequest } from "./../types/auth.type";
 import { GOOGLE_URL_AUTHENTICATION, FACEBOOK_URL_AUTHENTICATION } from "@env";
 import axios from "axios";
 import { AuthEndpointsEnum } from "../auth";
@@ -66,3 +66,13 @@ export const verifyOtp = async (data: VerifyOtpRequest) => {
   const result = await api.post<AuthResponse>(AuthEndpointsEnum.VERIFY, data);
   return result.data;
 };
+
+export const updateUser = async (params: Partial<AuthDef>) => {
+  const result = await api.patch<AuthResponse>(AuthEndpointsEnum.UPDATE, params);
+  return result.data;
+};
+
+export const likedProduct = async(params: LikedProductRequest)=>{
+  const result = await api.post(AuthEndpointsEnum.LIKED, params);
+  return result.data;
+}

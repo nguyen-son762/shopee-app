@@ -8,6 +8,10 @@ import HomeScreen from "app/features/home/screens/HomeScreen";
 import { CART_ROUTES, CartStack } from "app/features/cart/routes/cart.route";
 import PaymentScreen from "app/features/payment/screens/PaymentScreen";
 import { RoutesNameEnum } from "app/types/routes.types";
+import SearchScreen from "app/features/search/screens/SearchScreen";
+import { PROFILE_ROUTES, ProfileStack } from "app/features/profile/routes/profile.route";
+import OrderScreen from "app/features/cart/screens/OrderScreen";
+import CartScreen from "app/features/cart/screens/CartScreen";
 
 const RootStack = createNativeStackNavigator();
 
@@ -31,17 +35,38 @@ export const AuthStackScreen = () => {
 export const CartStackScreen = () => {
   return (
     <CartStack.Navigator>
-      {CART_ROUTES.map((route) => (
-        <CartStack.Screen
+      <CartStack.Screen
+        name="Cart"
+        component={CartScreen}
+        options={{
+          headerShown: false
+        }}
+      ></CartStack.Screen>
+    </CartStack.Navigator>
+  );
+};
+
+export const ProfileStackScreen = () => {
+  return (
+    <ProfileStack.Navigator>
+      {PROFILE_ROUTES.map((route) => (
+        <ProfileStack.Screen
           key={route.name}
           name={route.name}
           component={route.component}
           options={{
             headerShown: false
           }}
-        ></CartStack.Screen>
+        ></ProfileStack.Screen>
       ))}
-    </CartStack.Navigator>
+      <CartStack.Screen
+        name="Order"
+        component={OrderScreen}
+        options={{
+          headerShown: false
+        }}
+      ></CartStack.Screen>
+    </ProfileStack.Navigator>
   );
 };
 
@@ -49,8 +74,15 @@ export const RootStackScreen = () => {
   return (
     <RootStack.Navigator>
       <RootStack.Screen
-        name="Home"
+        name={RoutesNameEnum.HOME}
         component={HomeScreen}
+        options={{
+          headerShown: false
+        }}
+      />
+      <RootStack.Screen
+        name={RoutesNameEnum.SEARCH}
+        component={SearchScreen}
         options={{
           headerShown: false
         }}

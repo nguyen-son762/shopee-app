@@ -1,9 +1,9 @@
-interface AddressDef {
-  name: string;
-  phone_number: string;
+export interface AddressDef {
+  name?: string;
+  phone_number?: string;
   city: string;
   street: string;
-  default: boolean;
+  default?: boolean;
 }
 
 export type AuthDef = {
@@ -18,6 +18,10 @@ export type AuthDef = {
   phone_number?: string;
   avatar_url?: string;
   address?: AddressDef[];
+  liked?: {
+    model_id: string
+    product: string
+  }[]
 };
 
 export type AuthRequest = {
@@ -79,3 +83,8 @@ export interface VerifyOtpRequest {
 }
 
 export type SignUpResponse = AuthResponse;
+
+export type LikedProductRequest = {
+  user_id: string
+  product: string
+}

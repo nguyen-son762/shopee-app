@@ -4,5 +4,7 @@ export enum AuthEndpointsEnum {
   LOGIN = "auth/login",
   LOGIN_WITH_PLATFORM = "auth/platform",
   REGISTER = "auth/register/phone",
-  VERIFY = "auth/verify"
+  VERIFY = "auth/verify",
+  UPDATE = "auth/update",
+  LIKED = 'auth/liked'
 }

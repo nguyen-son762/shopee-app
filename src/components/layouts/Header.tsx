@@ -9,9 +9,10 @@ type HeaderProps = {
   rightContent?: ReactNode;
   centerContent: ReactNode;
   leftContent?: ReactNode;
+  onBack?: () => void;
 };
 
-const Header: FC<HeaderProps> = ({ rightContent, centerContent, leftContent }) => {
+const Header: FC<HeaderProps> = ({ rightContent, centerContent, leftContent, onBack }) => {
   const navigation = useNavigation();
   return (
     <View
@@ -30,7 +31,13 @@ const Header: FC<HeaderProps> = ({ rightContent, centerContent, leftContent }) =
               name="arrow-back"
               size={30}
               color={Theme.color.primary}
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                if (onBack) {
+                  onBack();
+                  return;
+                }
+                navigation.goBack();
+              }}
             />
           </TouchableOpacity>
         )}

@@ -21,6 +21,7 @@ import LoginAndSignUpHeader from "../../components/LoginAndSignUpHeader";
 import DefaultLayout from "app/components/layouts/DefaultLayout";
 import { ToastTypeEnum } from "app/features/app/toast/toast.type";
 import { useFocusEffect } from "@react-navigation/native";
+import { AUTH_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 
 type Props = NativeStackScreenProps<RootStackParams>;
 
@@ -63,10 +64,6 @@ const LoginScreen = ({ navigation }: Props) => {
     }
     await onGetUserByFacebook(responseFacebook.authentication.accessToken);
     if (!user) {
-      onOpen({
-        description: "Đã có lỗi xảy ra",
-        type: ToastTypeEnum.WARNING
-      });
       return;
     }
     navigation.navigate(RoutesNameEnum.HOME);
@@ -77,16 +74,10 @@ const LoginScreen = ({ navigation }: Props) => {
       return;
     }
     const persistAuth = async () => {
-      await AsyncStorage.setItem("auth", JSON.stringify(response.authentication));
+      await AsyncStorage.setItem(AUTH_IN_ASYNC_STORAGE, JSON.stringify(response.authentication));
     };
     await persistAuth();
     await onGetUserByGoogle(response.authentication?.accessToken || "");
-    if (!user) {
-      onOpen({
-        description: "Đã có lỗi xảy ra",
-        type: ToastTypeEnum.WARNING
-      });
-    }
   }
 
   useFocusEffect(

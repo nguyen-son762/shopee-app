@@ -25,7 +25,7 @@ const Product: FC<ProductProps> = ({ product, width, navigation }) => {
       <View className="bg-white pb-3 w-full">
         <Image
           source={{
-            uri: `${URL_IMAGE_CLOUDIARY || ""}${thumb_url}`,
+            uri: `${URL_IMAGE_CLOUDIARY || ""}/${thumb_url}`,
             width: width,
             height: 200
           }}

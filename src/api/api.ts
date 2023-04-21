@@ -1,8 +1,9 @@
 import store from "app/store";
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
+import { BASE_URL } from "@env";
 
 export const api = axios.create({
-  baseURL: "http://10.10.150.212:5000/api/",
+  baseURL: "http://localhost:5000/api/",
   headers: {
     "Content-Type": "application/json"
   },

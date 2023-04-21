@@ -1,4 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationProp, useNavigation } from "@react-navigation/native";
+import { ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 import { Theme } from "app/constants/theme.constants";
 import { useStoreDispatch, useStoreState } from "app/store";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
@@ -17,6 +19,9 @@ const CartFooter = () => {
     return cart.reduce((prev, current) => {
       return prev + current.model.price * current.amount;
     }, 0);
+  }, [cart]);
+  const ordersSelected = useMemo(() => {
+    return cart.filter((item) => item.selected);
   }, [cart]);
   const isSelectedAll = useMemo(() => {
     return cart.every((item) => item.selected);
@@ -38,6 +43,13 @@ const CartFooter = () => {
         };
       });
     updateCart(newCart);
+  };
+  const purchase = async () => {
+    if (!ordersSelected.length) {
+      return;
+    }
+    await AsyncStorage.setItem(ORDER_IN_ASYNC_STORAGE, JSON.stringify(ordersSelected));
+    navigation.navigate(RoutesNameEnum.PAYMENT);
   };
 
   return (
@@ -67,11 +79,10 @@ const CartFooter = () => {
           Tổng thanh toán{" "}
           <Text className="text-primary text-base font-bold">{convertNumberToPrice(total)}</Text>
         </Text>
-        <TouchableOpacity
-          className="bg-primary h-full flex-row items-center"
-          onPress={() => navigation.navigate(RoutesNameEnum.HOME)}
-        >
-          <Text className="text-white text-base p-4 font-semibold">Mua hàng ({cart.length})</Text>
+        <TouchableOpacity className="bg-primary h-full flex-row items-center" onPress={purchase}>
+          <Text className="text-white text-base p-4 font-semibold">
+            Mua hàng ({ordersSelected.length})
+          </Text>
         </TouchableOpacity>
       </View>
     </View>

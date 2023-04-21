@@ -44,7 +44,7 @@ const ImageModal: FC<ImageModalProps> = ({ isVisible, images, close }) => {
               <View>
                 <Image
                   source={{
-                    uri: `${URL_IMAGE_CLOUDIARY || ""}${item}`
+                    uri: `${URL_IMAGE_CLOUDIARY || ""}/${item}`
                   }}
                   style={{
                     width: width,

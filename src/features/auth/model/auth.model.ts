@@ -1,7 +1,7 @@
 import { AUTH_IN_ASYNC_STORAGE } from "./../../../constants/common.constants";
 import { AxiosError } from "axios";
 import { SignUpUserRequest, VerifyOtpRequest } from "./../types/auth.type";
-import { loginByGoogleOrFacebook, signUpUser, verifyOtp } from "./../api/auth.api";
+import { loginByGoogleOrFacebook, signUpUser, updateUser, verifyOtp } from "./../api/auth.api";
 import { Action, Thunk, action, thunk, ThunkOn, thunkOn } from "easy-peasy";
 import {
   AuthDef,
@@ -20,12 +20,15 @@ export interface AuthModel {
   loading: boolean;
   set: Action<AuthModel, AuthResponse>;
   setLoading: Action<AuthModel, boolean>;
+  reset: Action<AuthModel>;
+  logout: Thunk<AuthModel>;
   login: Thunk<AuthModel, AuthRequest>;
   onGetUserByGoogle: Thunk<AuthModel, string>;
   onGetUserByFacebook: Thunk<AuthModel, string>;
   loginByGoogleOrFacebook: Thunk<AuthModel, LoginByGoogleOrFacebookRequest>;
   signUp: Thunk<AuthModel, SignUpUserRequest>;
   verifyOtp: Thunk<AuthModel, VerifyOtpRequest>;
+  update: Thunk<AuthModel, Partial<AuthDef>>;
   onError: ThunkOn<AuthModel>;
 }
 
@@ -46,6 +49,13 @@ export const auth: AuthModel = {
   }),
   setLoading: action((state, payload) => {
     state.loading = payload;
+  }),
+  reset: action((state) => {
+    state.user = null;
+  }),
+  logout: thunk(async (actions) => {
+    actions.reset()
+    await AsyncStorage.removeItem(AUTH_IN_ASYNC_STORAGE)
   }),
   login: thunk(async (actions, payload) => {
     actions.setLoading(true);
@@ -129,7 +139,16 @@ export const auth: AuthModel = {
       actions.set(result);
       return result;
     } catch (err) {
-      console.warn(err);
+      fail(err);
+    } finally {
+      actions.setLoading(false);
+    }
+  }),
+  update: thunk(async (actions, payload, { fail }) => {
+    try {
+      const result = await updateUser(payload);
+      actions.set(result);
+    } catch (err) {
       fail(err);
     } finally {
       actions.setLoading(false);

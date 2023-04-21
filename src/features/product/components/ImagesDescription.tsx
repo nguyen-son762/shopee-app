@@ -1,7 +1,7 @@
 import { URL_IMAGE_CLOUDIARY } from "@env";
 import { Theme } from "app/constants/theme.constants";
 import React, { FC, memo } from "react";
-import { FlatList, Image, View } from "react-native";
+import { FlatList, Image, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
 
 type ImagesDescriptionProps = {
   images: string[];
@@ -17,21 +17,22 @@ const ImagesDescription: FC<ImagesDescriptionProps> = ({ images, selectedImage, 
         horizontal
         keyExtractor={(item, index) => `${item}${index}`}
         renderItem={(image) => (
-          <View
+          <TouchableOpacity
             className="mr-2 rounded-sm"
             style={{
               borderColor: selectedImage === image.item ? Theme.color.primary : "#fff",
               borderWidth: 1
             }}
-            onTouchEnd={() => onTapImage(image.item)}
+            onPress={() => onTapImage(image.item)}
+            delayLongPress={3000}
           >
             <Image
               className="w-[100] h-[100]"
               source={{
-                uri: `${URL_IMAGE_CLOUDIARY}${image.item}`
+                uri: `${URL_IMAGE_CLOUDIARY}/${image.item}`
               }}
             />
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>

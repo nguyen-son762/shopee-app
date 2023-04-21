@@ -1,3 +1,4 @@
+import { OrderStatusEnums } from "app/features/cart/constants/cart.constants";
 import { ProductDef } from "app/features/product/types/product.type";
 import { FC } from "react";
 
@@ -8,7 +9,10 @@ export enum RoutesNameEnum {
   CART = "Cart",
   VERIFY_OTP = "VerifyOTP",
   PRODUCT_DETAIL = "ProductDetail",
-  PAYMENT = "Payment"
+  PAYMENT = "Payment",
+  SEARCH = "Search",
+  PROFILE = "Profile",
+  ORDER = "Order"
 }
 
 export type RootStackParams = {
@@ -21,6 +25,13 @@ export type RootStackParams = {
     item: ProductDef;
   };
   [RoutesNameEnum.PAYMENT]: undefined;
+  [RoutesNameEnum.SEARCH]: {
+    keyword: string;
+  };
+  [RoutesNameEnum.PROFILE]: undefined;
+  [RoutesNameEnum.ORDER]: {
+    status?: OrderStatusEnums;
+  };
 };
 
 export type RouteItemDef = {

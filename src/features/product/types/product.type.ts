@@ -7,6 +7,7 @@ export type ModelDef = {
 };
 
 export type Category = {
+  _id: string;
   name: string;
 };
 
@@ -44,6 +45,9 @@ export type GetProductsParams = {
   keyword?: string;
   limit?: number;
   type?: string;
+  page?: number;
+  category?: string;
+  sort?: string;
 };
 
 export type GetProductsResponse = {
