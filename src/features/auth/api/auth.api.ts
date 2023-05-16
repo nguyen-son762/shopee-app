@@ -1,4 +1,10 @@
-import { SignUpUserRequest, SignUpResponse, VerifyOtpRequest, AuthDef, LikedProductRequest } from "./../types/auth.type";
+import {
+  SignUpUserRequest,
+  SignUpResponse,
+  VerifyOtpRequest,
+  AuthDef,
+  LikedProductRequest
+} from "./../types/auth.type";
 import { GOOGLE_URL_AUTHENTICATION, FACEBOOK_URL_AUTHENTICATION } from "@env";
 import axios from "axios";
 import { AuthEndpointsEnum } from "../auth";
@@ -11,7 +17,7 @@ import {
 } from "../types/auth.type";
 import { api } from "app/api/api";
 
-export const getUser = (user: AuthRequest): Promise<AuthResponse> => {
+export const getUser = (user: AuthRequest): Promise<any> => {
   return api.post(AuthEndpointsEnum.LOGIN, {
     phone_number: user.phone_number.replace("0", "+84"),
     password: user.password
@@ -72,7 +78,7 @@ export const updateUser = async (params: Partial<AuthDef>) => {
   return result.data;
 };
 
-export const likedProduct = async(params: LikedProductRequest)=>{
+export const likedProduct = async (params: LikedProductRequest) => {
   const result = await api.post(AuthEndpointsEnum.LIKED, params);
   return result.data;
-}
+};

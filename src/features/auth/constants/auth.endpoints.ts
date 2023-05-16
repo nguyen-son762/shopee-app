@@ -6,5 +6,5 @@ export enum AuthEndpointsEnum {
   REGISTER = "auth/register/phone",
   VERIFY = "auth/verify",
   UPDATE = "auth/update",
-  LIKED = 'auth/liked'
+  LIKED = "auth/liked"
 }

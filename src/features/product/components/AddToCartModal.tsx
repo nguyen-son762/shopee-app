@@ -23,6 +23,7 @@ import { NavigationProp, useNavigation } from "@react-navigation/native";
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CART_IN_ASYNC_STORAGE, ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
+import { OrderStatusEnums } from "app/features/cart/constants/cart.constants";
 
 type AddToCartModalProps = {
   isVisible: boolean;
@@ -104,7 +105,8 @@ const AddToCartModal: FC<AddToCartModalProps> = ({ isVisible, close, product, is
           product: product._id || "",
           model: selectedProduct._id,
           amount: Number(amount),
-          promotion_code: "1"
+          promotion_code: "1",
+          status: OrderStatusEnums.INCART
         });
       }
       onOpen({

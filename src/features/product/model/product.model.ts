@@ -29,6 +29,9 @@ export const products: ProductModel = {
   ...initialState,
   set: action((state, payload) => {
     if (payload) {
+      if(state.page === 1 ){
+        state.products= []
+      }
       if (state.products.length > 0) {
         state.products = [...state.products, ...payload.data];
       } else {
@@ -52,6 +55,7 @@ export const products: ProductModel = {
   getProducts: thunk(async (actions, payload) => {
     try {
       const result = await getProducts(payload);
+      console.warn('payload',payload)
       actions.set(result);
       return result;
     } catch (err) {

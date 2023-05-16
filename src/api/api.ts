@@ -3,7 +3,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { BASE_URL } from "@env";
 
 export const api = axios.create({
-  baseURL: "http://localhost:5000/api/",
+  baseURL: "http://localhost:4000/api/",
   headers: {
     "Content-Type": "application/json"
   },

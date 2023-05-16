@@ -48,11 +48,12 @@ export default function HomeScreen({ route, navigation }: Props) {
     LogBox.ignoreLogs(["VirtualizedLists should never be nested"]);
   }, []);
 
-  const handleCallApi = async () => {
+  const handleCallApi = async (category_id?: string) => {
     try {
       setLoading(true);
       await getProducts({
-        limit: 10
+        limit: 10,
+        category: category_id
       });
     } finally {
       setLoading(false);
@@ -109,7 +110,7 @@ export default function HomeScreen({ route, navigation }: Props) {
         onSearch={(keyword) => handleSearch(keyword)}
       />
       <ScrollView onScroll={(e) => handleScroll(e)}>
-        <Category />
+        <Category changeCategory={(id)=>handleCallApi(id)} />
         <View className="relative z-20 my-3">
           <DropDownPicker
             style={{

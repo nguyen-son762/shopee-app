@@ -20,6 +20,7 @@ export type CreateOrderParams = {
   model: string;
   promotion_code?: string;
   amount: number;
+  status?: OrderStatusEnums
 };
 
 export type CartResponseDef = {
@@ -38,8 +39,7 @@ export type CartResponseDef = {
 export type GetCartResponse = CartResponseDef[];
 
 export type UpdateStatusParams = {
-  order_id: string
-  status: OrderStatusEnums
-  user_id: string
-}
-
+  order_id: string;
+  status: OrderStatusEnums;
+  user_id: string;
+};

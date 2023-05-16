@@ -10,7 +10,7 @@ export const getProducts = async (params: GetProductsParams): Promise<GetProduct
   return result.data as GetProductsResponse;
 };
 
-export const getProductById = async(id: string)=>{
-  const result = await api.get(ProductEndpointsEnum.GET_DETAIL.replace(':product_id',id));
+export const getProductById = async (id: string) => {
+  const result = await api.get(ProductEndpointsEnum.GET_DETAIL.replace(":product_id", id));
   return result.data as GetProductsResponse;
-}
+};

@@ -43,12 +43,12 @@ const screenWidth = Dimensions.get("window").width;
 const ProductDetailScreen: FC<ProductDetailProps> = ({ navigation }) => {
   const { user } = useStoreState((state) => state.auth);
   const {
-    auth: { set },
+    auth: { set }
   } = useStoreDispatch();
   const { width, height } = useWindowDimensions();
   const route = useRoute();
   const product = useMemo(() => (route?.params as { item: ProductDef })?.item, [route?.params]);
-const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
+  const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
   const [products, setProducts] = useState<ProductDef[]>([]);
   const [numOfImage, setNumOfImage] = useState(0);
   const [isShowAllDescription, setIsShowAllDescription] = useState(false);
@@ -112,27 +112,25 @@ const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
     });
   };
 
-  const handleLiked =async () => {
-    try{
-      if(!user){
-        return
+  const handleLiked = async () => {
+    try {
+      if (!user) {
+        return;
       }
       const data = await likedProduct({
         user_id: user?._id,
         product: product._id
-      })
-      console.warn('data.data',data.data)
+      });
       set({
-        data:data.data,
+        data: data.data,
         access_token: user.access_token
-      })
+      });
       setLiked(!liked);
-    }
-    catch(err){
-      console.log('err',err)
+    } catch (err) {
+      console.log("err", err);
     }
   };
-
+  const description = useMemo(() => product.description || "", [product]);
   return (
     <SafeAreaView
       className="flex-col relative"
@@ -244,10 +242,9 @@ const carouselImagesRef = useRef<SwiperFlatListRefProps | null>(null);
             <RenderHTML
               contentWidth={width}
               source={{
-                html: `<p style="font-size:14px">${product.description.replaceAll(
-                  "\n",
-                  "<br />"
-                )}</p>`
+                html: `<p style="font-size:14px">${description.split(
+                  /\n/,
+                ).join("<br />")}</p>`
               }}
             />
           </View>

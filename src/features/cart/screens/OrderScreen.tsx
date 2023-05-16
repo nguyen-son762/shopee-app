@@ -43,6 +43,11 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
       getOrder();
     }, [status, user])
   );
+  useFocusEffect(
+    useCallback(() => {
+      getOrder();
+    }, [])
+  );
 
   const getOrder = async () => {
     if (!user?._id) {
@@ -88,7 +93,8 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
           className="flex-col h-full items-center justify-center"
           style={{
             backgroundColor: "rgba(0,0,0,0.2)"
-          }}>
+          }}
+        >
           <View className="bg-white w-full py-3">
             <Text className="text-center text-base">Bạn có đồng ý hủy bỏ sản phẩm không ?</Text>
             <View className="flex-row items-center justify-center mt-4 gap-x-3">
@@ -98,7 +104,8 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
                   borderColor: Theme.color.primary,
                   borderWidth: 1
                 }}
-                onPress={() => setIsVisibleCancelModal(false)}>
+                onPress={() => setIsVisibleCancelModal(false)}
+              >
                 <Text className="text-base text-center py-2">Hủy</Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -107,7 +114,8 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
                   borderColor: Theme.color.primary,
                   borderWidth: 1
                 }}
-                onPress={updateStatus}>
+                onPress={updateStatus}
+              >
                 <Text className="text-base bg-primary text-center text-white py-2">Đồng ý</Text>
               </TouchableOpacity>
             </View>
@@ -133,7 +141,8 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
                   status: item.item.status
                 });
               }}
-              delayLongPress={5000}>
+              delayLongPress={5000}
+            >
               <Text className="text-base">{item.item.title}</Text>
             </TouchableOpacity>
           )}
@@ -176,7 +185,8 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
                         onPress={() => {
                           setOrderSelected(order);
                           setIsVisibleCancelModal(true);
-                        }}></CustomButton>
+                        }}
+                      ></CustomButton>
                     </View>
                   ) : null}
                 </View>

@@ -26,7 +26,6 @@ const CartScreen: FC<CartScreenProps> = () => {
   } = useStoreDispatch();
   useFocusEffect(
     useCallback(() => {
-      getCart();
       AsyncStorage.getItem(CART_IN_ASYNC_STORAGE).then((data) => {
         if (data) {
           setCart(
@@ -39,6 +38,7 @@ const CartScreen: FC<CartScreenProps> = () => {
           );
         }
       });
+      getCart();
     }, [getCart, setCart])
   );
 

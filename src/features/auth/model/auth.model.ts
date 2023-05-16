@@ -54,14 +54,14 @@ export const auth: AuthModel = {
     state.user = null;
   }),
   logout: thunk(async (actions) => {
-    actions.reset()
-    await AsyncStorage.removeItem(AUTH_IN_ASYNC_STORAGE)
+    actions.reset();
+    await AsyncStorage.removeItem(AUTH_IN_ASYNC_STORAGE);
   }),
   login: thunk(async (actions, payload) => {
     actions.setLoading(true);
     const user = await getUser(payload);
     actions.setLoading(false);
-    actions.set(user);
+    actions.set(user.data);
   }),
   onGetUserByGoogle: thunk(async (actions, payload, { fail }) => {
     try {

@@ -5,6 +5,7 @@ import { Action, Thunk, action, thunk } from "easy-peasy";
 import { createOrder, getCart } from "../api/cart.api";
 import store from "app/store";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { OrderStatusEnums } from "../constants/cart.constants";
 
 export type CartDef = {
   _id?: string;
@@ -59,7 +60,7 @@ export const cart: CartModel = {
       const parseUser = JSON.parse(userInAsyncStorage || "");
       const { user } = store.getState().auth;
       if (user?._id) {
-        const data = await getCart(user._id || parseUser._id);
+        const data = await getCart(user._id || parseUser._id, OrderStatusEnums.INCART);
         const mappingData = ((data.data as GetCartResponse) || []).map((item) => {
           return {
             _id: item._id || "",

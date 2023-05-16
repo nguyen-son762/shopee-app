@@ -159,10 +159,10 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
       });
     }
   };
-  const handleLogout =async ()=>{
-    await logout()
-    navigation.navigate(RoutesNameEnum.HOME)
-  }
+  const handleLogout = async () => {
+    await logout();
+    navigation.navigate(RoutesNameEnum.HOME);
+  };
 
   return (
     <View>
@@ -202,7 +202,8 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
             navigation.navigate(RoutesNameEnum.ORDER, {
               status: OrderStatusEnums.DONE
             });
-          }}>
+          }}
+        >
           <View className="flex-row gap-x-3 items-center">
             <FontAwesome name="list-alt" size={24} color="#0058B3" />
             <Text className="text-base">Đơn Mua</Text>
@@ -224,7 +225,8 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
                 navigation.navigate(RoutesNameEnum.ORDER, {
                   status: order.status
                 });
-              }}>
+              }}
+            >
               <View className="relative">
                 {order.icon}
                 {order.amount ? (
@@ -246,7 +248,8 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           onPress={() => {
             setFormType(UpdateInfoTypes.FULL_NAME);
             setIsVisibleInfoForm(true);
-          }}>
+          }}
+        >
           <View className="flex-row gap-x-3 items-center">
             <Text className="text-base">Họ tên</Text>
           </View>
@@ -261,7 +264,8 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           className="flex-row items-center justify-between px-3 py-3"
           onPress={() => {
             setIsVisibleAddressForm(true);
-          }}>
+          }}
+        >
           <View className="gap-x-3">
             <Text>{user?.address?.[0].city ? user?.address[0].city : ""}</Text>
             <Text>{user?.address?.[0].city ? user.address[0].street : ""}</Text>
@@ -279,7 +283,8 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           onPress={() => {
             setFormType(UpdateInfoTypes.PHONENUMBER);
             setIsVisibleInfoForm(true);
-          }}>
+          }}
+        >
           <View className="flex-row gap-x-3 items-center">
             <Text className="text-base">Số điện thoại</Text>
           </View>
@@ -293,7 +298,8 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
       <View className="bg-white">
         <TouchableOpacity
           className="flex-row items-center justify-between px-3 py-3"
-          onPress={handleLogout}>
+          onPress={handleLogout}
+        >
           <View className="flex-row gap-x-3 items-center">
             <Text className="text-base text-red-500">Đăng xuất</Text>
           </View>

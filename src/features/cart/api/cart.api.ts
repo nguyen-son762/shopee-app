@@ -20,13 +20,13 @@ export const createOrder = (params: CreateOrderParams) => {
 
 export const getStatus = async (user_id: string) => {
   const result = await api.get(CartEndpointsEnum.STATUS.replace(":user_id", user_id));
-  return result.data
+  return result.data;
 };
 
 export const updateOrderStatus = async (params: UpdateStatusParams) => {
-  const result = await api.post(CartEndpointsEnum.STATUS.replace(":user_id", params.user_id),{
+  const result = await api.post(CartEndpointsEnum.STATUS.replace(":user_id", params.user_id), {
     order_id: params.order_id,
     status: params.status
   });
-  return result.data
+  return result.data;
 };

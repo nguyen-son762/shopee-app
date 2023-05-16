@@ -1,3 +1,4 @@
+import { useStoreDispatch } from "app/store";
 import React, { memo } from "react";
 import { Dimensions, Image, Text, TouchableOpacity, View } from "react-native";
 import SwiperFlatList from "react-native-swiper-flatlist";
@@ -13,23 +14,27 @@ const slides = [
 const categories = [
   {
     image: require("app/assets/images/female_thumbnail.jpg"),
-    title: "Thời trang nữ"
+    title: "Thời trang nữ",
+    id: '64098e1bb25d32b440aeb765'
   },
   {
     image: require("app/assets/images/male_thumbnail.jpg"),
-    title: "Thời trang nam"
-  },
-  {
-    image: require("app/assets/images/hat_thumbnail.jpg"),
-    title: "Mũ"
-  },
-  {
-    image: require("app/assets/images/hat_thumbnail.jpg"),
-    title: "Mũ nam"
+    title: "Thời trang nam",
+    id:'64098e1bb25d32b440aeb764'
   }
 ];
 
-const Category = () => {
+type Props = {
+  changeCategory: (id: string) => void
+}
+
+const Category = (props: Props) => {
+  const {
+    products: { getProducts }
+  } = useStoreDispatch();
+  const handleClickCategory = async(id: string)=>{
+    props.changeCategory(id)
+  }
   return (
     <View className="mb-1">
       <SwiperFlatList
@@ -54,7 +59,7 @@ const Category = () => {
       <View className="mt-1 pt-2 pb-2 flex-row gap-x-8 px-2 bg-white">
         {categories.map((category) => {
           return (
-            <TouchableOpacity className="flex-1 p-1 rounded-3xl bg-white" key={category.title}>
+            <TouchableOpacity onPress={()=>handleClickCategory(category.id)} className="flex-1 p-1 rounded-3xl bg-white" key={category.title}>
               <View
                 className="rounded-xl"
                 style={{ borderColor: "#e4e4e4", borderWidth: 1, padding: 0.8 }}

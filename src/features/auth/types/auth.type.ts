@@ -19,9 +19,9 @@ export type AuthDef = {
   avatar_url?: string;
   address?: AddressDef[];
   liked?: {
-    model_id: string
-    product: string
-  }[]
+    model_id: string;
+    product: string;
+  }[];
 };
 
 export type AuthRequest = {
@@ -85,6 +85,6 @@ export interface VerifyOtpRequest {
 export type SignUpResponse = AuthResponse;
 
 export type LikedProductRequest = {
-  user_id: string
-  product: string
-}
+  user_id: string;
+  product: string;
+};
