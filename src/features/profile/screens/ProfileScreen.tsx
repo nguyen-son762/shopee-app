@@ -16,6 +16,7 @@ import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import { OrderStatusEnums } from "app/features/cart/constants/cart.constants";
 import { useFocusEffect } from "@react-navigation/native";
 import { getStatus } from "app/features/cart/api/cart.api";
+import { useIsFocused } from "@react-navigation/native";
 
 type Props = NativeStackScreenProps<RootStackParams>;
 
@@ -56,7 +57,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
       }
     ];
   }, [orderAmount]);
-
+const isFocused = useIsFocused()
   useFocusEffect(
     useCallback(() => {
       if (!user?._id) {
@@ -65,7 +66,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
       getStatus(user?._id).then((data) => {
         setOrderAmount(data.status);
       });
-    }, [])
+    }, [isFocused])
   );
 
   const pickImage = async () => {

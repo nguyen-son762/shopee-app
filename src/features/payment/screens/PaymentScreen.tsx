@@ -72,10 +72,12 @@ const PaymentScreen: FC<PaymentScreenProps> = ({ navigation }) => {
         };
       });
       await purchaseCart(data);
-      const cartInStorage = await AsyncStorage.getItem(CART_IN_ASYNC_STORAGE);
-      const cart = JSON.parse(cartInStorage||'')
-      const filterCart = cart.filter((item: CartDef)=> !orders.find(order=>order._id === item._id) )
-      await AsyncStorage.setItem(CART_IN_ASYNC_STORAGE,JSON.stringify(filterCart))
+      if(!user || !user._id){
+        const cartInStorage = await AsyncStorage.getItem(CART_IN_ASYNC_STORAGE);
+        const cart = JSON.parse(cartInStorage||'')
+        const filterCart = cart.filter((item: CartDef)=> !orders.find(order=>order._id === item._id) )
+        await AsyncStorage.setItem(CART_IN_ASYNC_STORAGE,JSON.stringify(filterCart || []))
+      }
       onOpen({
         description: "Đặt hàng thành công",
         type: ToastTypeEnum.SUCCESS
@@ -85,6 +87,7 @@ const PaymentScreen: FC<PaymentScreenProps> = ({ navigation }) => {
         navigation.navigate(RoutesNameEnum.HOME);
       }, 1000);
     } catch (err) {
+      console.warn('err',err)
       onOpen({
         description: "Đặt hàng thất bại",
         type: ToastTypeEnum.SUCCESS
