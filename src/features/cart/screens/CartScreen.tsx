@@ -13,6 +13,7 @@ import CartFooter from "../components/CartFooter";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CART_IN_ASYNC_STORAGE } from "app/constants/common.constants";
+import { useIsFocused } from "@react-navigation/native";
 
 type CartScreenProps = NativeStackScreenProps<RootStackParams>;
 
@@ -21,6 +22,7 @@ const CartScreen: FC<CartScreenProps> = () => {
   const statusBarHeight = insets.top;
   const { height } = useWindowDimensions();
   const { cart } = useStoreState((state) => state.cart);
+  const isFocused = useIsFocused();
   const {
     cart: { set: setCart, get: getCart }
   } = useStoreDispatch();
@@ -39,7 +41,7 @@ const CartScreen: FC<CartScreenProps> = () => {
         }
       });
       getCart();
-    }, [getCart, setCart])
+    }, [getCart, setCart,isFocused])
   );
 
   const cartModified = useMemo(() => {

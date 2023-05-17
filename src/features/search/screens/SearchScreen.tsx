@@ -148,7 +148,7 @@ const SearchScreen: FC<SearchScreenProps> = ({ route, navigation }) => {
               }}
               keyExtractor={(item, index) => `${item._id || ""}${index}`}
               ListFooterComponent={
-                isEnd ? (
+                isEnd || productsBySearch.length === 0 ? (
                   <Text className="text-center text-primary">Tất cả sản phầm đã được hiển thị</Text>
                 ) : (
                   <ActivityIndicator size="large" color="#ee4d2d" />

@@ -3,7 +3,9 @@ import * as yup from "yup";
 export const initialValuesSignUpForm = {
   phone_number: "",
   password: "",
-  confirmPassword: ""
+  confirmPassword: "",
+  first_name:'',
+  last_name:''
 };
 
 export const SignUpValidationSchema = yup.object().shape({

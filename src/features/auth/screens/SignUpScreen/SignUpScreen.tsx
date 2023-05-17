@@ -17,6 +17,8 @@ type InitialSignUpForm = {
   phone_number: string;
   password: string;
   confirmPassword: string;
+  first_name: string;
+  last_name: string;
 };
 
 const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
@@ -25,12 +27,16 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
     auth: { signUp }
   } = useStoreDispatch();
   const handleSignUp = async (values: InitialSignUpForm) => {
-    if (loading) {
-      return;
-    }
-    const result = await signUp(values);
-    if (result && result?.data) {
-      navigation.navigate(RoutesNameEnum.VERIFY_OTP);
+    try {
+      if (loading) {
+        return;
+      }
+      const result = await signUp(values);
+      if (result && result?.data) {
+        navigation.navigate(RoutesNameEnum.VERIFY_OTP);
+      }
+    } catch (err) {
+      console.log("err", err);
     }
   };
   return (
@@ -40,11 +46,36 @@ const SignUpScreen: FC<SignUpScreenProps> = ({ navigation }) => {
       <Formik
         initialValues={initialValuesSignUpForm}
         validationSchema={SignUpValidationSchema}
-        onSubmit={handleSignUp}
-      >
+        onSubmit={handleSignUp}>
         {({ handleChange, handleSubmit, values, errors, touched }) => (
           <View>
             <View className="px-6 mt-2">
+              <CustomInput
+                value={values.first_name}
+                icon={Feather}
+                inputClass="mt-3"
+                placeholder="Họ"
+                iconName="lock"
+                size={22}
+                iconColor="#595959"
+                borderWidth={1}
+                borderColor="#cececd"
+                showIcon={false}
+                onChangeText={handleChange("first_name")}
+              />
+              <CustomInput
+                value={values.last_name}
+                icon={Feather}
+                inputClass="mt-3"
+                placeholder="Tên"
+                iconName="lock"
+                size={22}
+                iconColor="#595959"
+                borderWidth={1}
+                borderColor="#cececd"
+                showIcon={false}
+                onChangeText={handleChange("last_name")}
+              />
               <CustomInput
                 value={values.phone_number}
                 icon={FontAwesome}

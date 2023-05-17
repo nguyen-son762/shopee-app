@@ -116,7 +116,9 @@ export const auth: AuthModel = {
       actions.setLoading(true);
       const result = await signUpUser({
         phone_number: "+84".concat(payload.phone_number.slice(1)),
-        password: payload.password
+        password: payload.password,
+        first_name: payload.first_name,
+        last_name: payload.last_name
       });
       actions.set(result);
       return result;

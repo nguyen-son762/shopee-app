@@ -1,20 +1,18 @@
 import { ANDROID_CLIENT_ID, IOS_CLIENT_ID, EXPO_CLIENT_ID, FACEBOOK_CLIENT_ID } from "@env";
 
 import React, { useCallback } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import * as Google from "expo-auth-session/providers/google";
 import * as Facebook from "expo-auth-session/providers/facebook";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import { FontAwesome5 } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Formik } from "formik";
 
 import { RootStackParams, RoutesNameEnum } from "app/types/routes.types";
 import CustomInput from "app/components/CustomInput";
 import CustomButton from "app/components/CustomButton";
-import PlatformButton from "../../components/PlatformButton";
 import LoginFooter from "../../components/LoginFooter";
 import { useStoreState, useStoreDispatch } from "app/store";
 import LoginAndSignUpHeader from "../../components/LoginAndSignUpHeader";
@@ -153,31 +151,6 @@ const LoginScreen = ({ navigation }: Props) => {
           </View>
         )}
       </Formik>
-
-      <View className="flex-row items-center justify-center mt-7">
-        <View className="h-[1px] w-8 bg-[#f5f5f5]"></View>
-        <Text className="mx-2">Hoặc</Text>
-        <View className="h-[1px] w-8 bg-[#f5f5f5]"></View>
-      </View>
-
-      <View className="mt-4 mx-6">
-        <PlatformButton
-          label="Tiếp tục với Google"
-          iconName="google"
-          icon={AntDesign}
-          iconColor="#ea4236"
-          onPress={() => promptAsync()}
-        />
-      </View>
-      <View className="mt-4 mx-6">
-        <PlatformButton
-          label="Tiếp tục với Facebook"
-          iconName="facebook"
-          icon={FontAwesome5}
-          iconColor="#1777f1"
-          onPress={() => promptAsyncFacebook()}
-        />
-      </View>
 
       <LoginFooter />
     </DefaultLayout>

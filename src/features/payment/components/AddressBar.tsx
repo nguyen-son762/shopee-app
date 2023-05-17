@@ -55,7 +55,7 @@ const AddressBar = React.forwardRef<GetAddress, any>(
                 <Text className="text-base">{address.name}</Text>
                 <Text className="text-base">{address.phone_number}</Text>
                 <Text className="text-base">
-                  {address.street}, {address.city.split("\n").reverse().join(",")}
+                  {address?.street}, {address?.city.split("\n").reverse().join(",")}
                 </Text>
               </View>
             ) : (

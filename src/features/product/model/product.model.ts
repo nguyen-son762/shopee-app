@@ -55,7 +55,6 @@ export const products: ProductModel = {
   getProducts: thunk(async (actions, payload) => {
     try {
       const result = await getProducts(payload);
-      console.warn('payload',payload)
       actions.set(result);
       return result;
     } catch (err) {

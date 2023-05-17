@@ -22,11 +22,13 @@ import { convertNumberToPrice } from "app/utils/convertPrice";
 import CustomButton from "app/components/CustomButton";
 import CustomToast from "app/components/Toast/CustomToast";
 import { ToastTypeEnum } from "app/features/app/toast/toast.type";
+import { useIsFocused } from "@react-navigation/native";
 
 type OrderScreenProps = NativeStackScreenProps<RootStackParams>;
 
 const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
   const { user } = useStoreState((state) => state.auth);
+  const isFocused = useIsFocused()
   const {
     toast: { onOpen }
   } = useStoreDispatch();
@@ -41,12 +43,7 @@ const OrderScreen: FC<OrderScreenProps> = ({ route, navigation }) => {
   useFocusEffect(
     useCallback(() => {
       getOrder();
-    }, [status, user])
-  );
-  useFocusEffect(
-    useCallback(() => {
-      getOrder();
-    }, [])
+    }, [isFocused,status, user])
   );
 
   const getOrder = async () => {

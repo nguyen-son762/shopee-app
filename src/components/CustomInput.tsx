@@ -5,7 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import CustomLink from "./CustomLink";
 
 interface Props extends TextInputProps {
-  icon: React.ElementType;
+  icon?: React.ElementType;
   iconName: unknown;
   iconColor: string;
   size?: number;
@@ -40,7 +40,7 @@ const CustomInput = ({
         borderBottomWidth: borderWidth
       }}
     >
-      {showIcon && (
+      {showIcon&& Icon && (
         <View className="pr-3 translate-y-[3px]">
           <Icon color={iconColor} size={size || 24} name={iconName} />
         </View>

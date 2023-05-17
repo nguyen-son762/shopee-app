@@ -140,7 +140,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
       const user = await updateProfile({
         address: [
           {
-            city: `${values.city.name}\n${values.district.name}\n${values.ward.name}`,
+            city: `${values?.city.name}\n${values?.district.name}\n${values?.ward.name}`,
             street: values.street || ""
           }
         ]
@@ -184,7 +184,9 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           <Image
             className="w-[70] h-[70] rounded-full"
             source={{
-              uri: user?.avatar_url
+              uri:
+                user?.avatar_url ||
+                "https://p7.hiclipart.com/preview/336/946/494/avatar-user-medicine-surgery-patient-avatar.jpg"
             }}
           />
         </View>
@@ -202,8 +204,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
             navigation.navigate(RoutesNameEnum.ORDER, {
               status: OrderStatusEnums.DONE
             });
-          }}
-        >
+          }}>
           <View className="flex-row gap-x-3 items-center">
             <FontAwesome name="list-alt" size={24} color="#0058B3" />
             <Text className="text-base">Đơn Mua</Text>
@@ -225,8 +226,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
                 navigation.navigate(RoutesNameEnum.ORDER, {
                   status: order.status
                 });
-              }}
-            >
+              }}>
               <View className="relative">
                 {order.icon}
                 {order.amount ? (
@@ -248,8 +248,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           onPress={() => {
             setFormType(UpdateInfoTypes.FULL_NAME);
             setIsVisibleInfoForm(true);
-          }}
-        >
+          }}>
           <View className="flex-row gap-x-3 items-center">
             <Text className="text-base">Họ tên</Text>
           </View>
@@ -264,11 +263,10 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           className="flex-row items-center justify-between px-3 py-3"
           onPress={() => {
             setIsVisibleAddressForm(true);
-          }}
-        >
+          }}>
           <View className="gap-x-3">
-            <Text>{user?.address?.[0].city ? user?.address[0].city : ""}</Text>
-            <Text>{user?.address?.[0].city ? user.address[0].street : ""}</Text>
+            <Text>{user?.address?.[0]?.city ? user?.address[0]?.city : ""}</Text>
+            <Text>{user?.address?.[0]?.city ? user?.address[0]?.street : ""}</Text>
             <Text className="text-base">Địa chỉ</Text>
           </View>
           <View>
@@ -283,8 +281,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
           onPress={() => {
             setFormType(UpdateInfoTypes.PHONENUMBER);
             setIsVisibleInfoForm(true);
-          }}
-        >
+          }}>
           <View className="flex-row gap-x-3 items-center">
             <Text className="text-base">Số điện thoại</Text>
           </View>
@@ -298,8 +295,7 @@ const ProfileScreen: FC<Props> = ({ navigation }) => {
       <View className="bg-white">
         <TouchableOpacity
           className="flex-row items-center justify-between px-3 py-3"
-          onPress={handleLogout}
-        >
+          onPress={handleLogout}>
           <View className="flex-row gap-x-3 items-center">
             <Text className="text-base text-red-500">Đăng xuất</Text>
           </View>

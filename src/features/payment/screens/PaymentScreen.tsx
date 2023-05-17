@@ -9,7 +9,7 @@ import AddressBar from "../components/AddressBar";
 import { useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CartDef } from "app/features/cart/model/cart.model";
-import { ADDRESS_IN_ASYNC_STORAGE, ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
+import { ADDRESS_IN_ASYNC_STORAGE, CART_IN_ASYNC_STORAGE, ORDER_IN_ASYNC_STORAGE } from "app/constants/common.constants";
 import { purchaseCart } from "../api/payment.api";
 import { useStoreDispatch, useStoreState } from "app/store";
 import CustomToast from "app/components/Toast/CustomToast";
@@ -72,6 +72,10 @@ const PaymentScreen: FC<PaymentScreenProps> = ({ navigation }) => {
         };
       });
       await purchaseCart(data);
+      const cartInStorage = await AsyncStorage.getItem(CART_IN_ASYNC_STORAGE);
+      const cart = JSON.parse(cartInStorage||'')
+      const filterCart = cart.filter((item: CartDef)=> !orders.find(order=>order._id === item._id) )
+      await AsyncStorage.setItem(CART_IN_ASYNC_STORAGE,JSON.stringify(filterCart))
       onOpen({
         description: "Đặt hàng thành công",
         type: ToastTypeEnum.SUCCESS

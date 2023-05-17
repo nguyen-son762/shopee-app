@@ -75,6 +75,8 @@ export interface LoginByGoogleOrFacebookRequest {
 export interface SignUpUserRequest {
   phone_number: string;
   password: string;
+  first_name: string
+  last_name: string
 }
 
 export interface VerifyOtpRequest {
